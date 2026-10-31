@@ -34,3 +34,16 @@
   addEventListener('resize', onScroll);
   update();
 })();
+
+// The canvas section is chrome-free: the nav steps aside while it is on screen.
+(function () {
+  var canvas = document.querySelector('.canvas');
+  var nav = document.querySelector('.nav');
+  if (!canvas || !nav) return;
+  new IntersectionObserver(
+    function (entries) {
+      nav.classList.toggle('is-hidden', entries[0].isIntersecting);
+    },
+    { threshold: 0.35 }
+  ).observe(canvas);
+})();

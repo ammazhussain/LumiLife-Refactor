@@ -247,3 +247,69 @@ ul{margin:0;padding:0;list-style:none}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
 }
+
+/* ---------- section 3 : the canvas ---------- */
+/* dark counterpoint, and the only place the chrome goes away */
+.canvas{
+  position:relative;
+  min-height:100vh;
+  padding:var(--pad);
+  background:var(--olive);
+  color:var(--paper-hi);
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:48px;
+}
+.canvas__label,.asks__label{
+  margin:0;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(232,233,223,.5);
+}
+.canvas__body{
+  align-self:center;
+  display:grid;grid-template-columns:minmax(0,1fr) 360px;
+  gap:80px;align-items:start;
+  padding-bottom:40px;
+}
+.canvas__h{
+  margin:0;max-width:15ch;
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(32px,4.1vw,66px);line-height:1.1;letter-spacing:-.03em;
+}
+
+.asks{padding-top:10px}
+.asks__list{margin:20px 0 0;display:grid;gap:0}
+.asks__list li{
+  padding:15px 0;
+  font-size:17px;line-height:1.3;color:rgba(232,233,223,.8);
+  border-top:1px solid rgba(232,233,223,.14);
+}
+.asks__list li:first-child{border-top:0;padding-top:0}
+.asks__note{
+  margin:22px 0 0;font-size:13px;line-height:1.5;color:rgba(232,233,223,.5);
+}
+
+.trust{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:56px;
+  padding-top:28px;border-top:1px solid rgba(232,233,223,.18);
+}
+.trust__k{
+  display:block;margin-bottom:8px;
+  font-size:14px;font-weight:500;color:var(--paper-hi);
+}
+.trust__v{
+  display:block;max-width:38ch;
+  font-size:13px;line-height:1.55;color:rgba(232,233,223,.6);
+}
+
+/* chrome steps aside while the canvas is on screen */
+.nav{
+  transition:opacity .4s var(--ease),transform .4s var(--ease);
+}
+.nav.is-hidden{opacity:0;transform:translateY(-14px);pointer-events:none}
+
+@media (max-width:1100px){
+  .canvas{gap:40px;padding:64px var(--pad)}
+  .canvas__body{grid-template-columns:1fr;gap:44px}
+  .trust{grid-template-columns:1fr;gap:28px}
+}
