@@ -730,19 +730,184 @@ ul{margin:0;padding:0;list-style:none}
   list-style:none;margin:0;padding:0;
   display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2vw,32px);
 }
-/* placeholder until a real tester is actually quoted */
+/* Ticket cards: a rounded rect with a semicircular bite out of each side at
+   mid-height. Two full-size radial masks, one hole each, intersected — the
+   same mask-composite trick the ring render already uses. A border cannot be
+   used here: the mask cuts the element, and a border would be cut with it and
+   leave the notch outlined on three sides only. */
 .voicecard{
-  display:grid;align-content:space-between;gap:30px;min-height:230px;
-  padding:28px;text-align:left;
-  background:var(--paper);border:1px dashed rgba(46,61,40,.24);
-  border-radius:22px;corner-shape:squircle;
+  --notch:17px;
+  display:grid;align-content:space-between;gap:24px;min-height:244px;
+  padding:26px 30px;text-align:left;
+  background:var(--sage);border-radius:22px;
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at 0 50%,transparent 98%,#000 100%),
+    radial-gradient(circle var(--notch) at 100% 50%,transparent 98%,#000 100%);
+  mask:
+    radial-gradient(circle var(--notch) at 0 50%,transparent 98%,#000 100%),
+    radial-gradient(circle var(--notch) at 100% 50%,transparent 98%,#000 100%);
+  -webkit-mask-composite:source-in;
+  mask-composite:intersect;
 }
+.voicecard__label{
+  margin:0;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(46,61,40,.55);
+}
+/* still a placeholder: no tester has been quoted */
 .voicecard__q{
   margin:0;font-family:var(--display);font-weight:400;
-  font-size:19px;line-height:1.35;letter-spacing:-.018em;color:var(--ink-3);
+  font-size:26px;line-height:1.2;letter-spacing:-.022em;color:var(--olive);
 }
-.voicecard__who{margin:0;font-size:13px;line-height:1.5;color:var(--ink-3)}
-.voicecard__who span{display:block;font-weight:500;color:var(--ink-2)}
+.voicecard__who{margin:0;font-size:13px;line-height:1.5;color:rgba(46,61,40,.62)}
+.voicecard__who span{display:block;font-weight:500;color:var(--olive)}
+
+@media (max-width:1100px){
+  .collection{height:auto;padding:64px var(--pad) 80px}
+  .cards{grid-template-columns:1fr}
+}
+
+/* ---------- section 5 : before / after marquee ---------- */
+/* Horizontal crawl you can grab. The curved masks are the trick that stops it
+   reading as a filmstrip: they are the section's OWN background colour, cut
+   into a concave curve, so the strip appears to pass behind the page rather
+   than sit in a box. They must match --paper-hi exactly or the seam shows. */
+.marquee{
+  padding:clamp(92px,9vw,140px) 0 clamp(70px,7vw,110px);
+  background:var(--paper-hi);text-align:center;overflow:hidden;
+}
+.marquee__label{
+  margin:0 0 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.marquee__h{
+  margin:0 auto clamp(30px,3.2vw,52px);max-width:18ch;padding:0 var(--pad);
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(28px,3.6vw,56px);line-height:1.08;letter-spacing:-.03em;
+}
+.marquee__strip{position:relative;overflow:hidden}
+.marquee__mask{
+  position:absolute;left:0;right:0;z-index:10;
+  /* The reference uses 100px over 512px cards. Ours are shorter and rounded, so
+     that depth sliced them into what looked like a rendering fault. A shallow
+     curve softens the strip's edges without eating the picture. */
+  width:100%;height:clamp(32px,3.4vw,52px);pointer-events:none;
+}
+.marquee__mask path{fill:var(--paper-hi)}
+.marquee__mask--top{top:0}
+.marquee__mask--bottom{bottom:0}
+
+.marquee__track{
+  list-style:none;margin:0;padding:18px 0;
+  display:flex;width:max-content;gap:clamp(12px,1.4vw,22px);
+  cursor:grab;user-select:none;-webkit-user-select:none;
+  will-change:transform;touch-action:pan-y;
+}
+.marquee__track.is-grabbing{cursor:grabbing}
+.mslide{
+  position:relative;flex:none;
+  width:clamp(210px,19vw,310px);aspect-ratio:5/8;
+  border-radius:20px;corner-shape:squircle;overflow:hidden;
+  background:var(--paper);border:1px solid var(--hairline);
+}
+.mslide img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.mslide__tag{
+  /* must clear the mask's deepest point, or the tag is simply invisible */
+  position:absolute;top:clamp(44px,4.6vw,68px);left:12px;z-index:2;
+  padding:5px 10px;border-radius:999px;
+  background:rgba(239,240,232,.9);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--olive);
+}
+/* Filled with the site olive rather than left as a dashed slot, so the strip
+   previews the weight and rhythm a real photo will have. The caption is the
+   only thing still saying "placeholder". */
+.mslide--empty{
+  display:grid;align-content:end;border-color:transparent;background:var(--olive);
+  /* bottom padding must clear the bottom mask's deepest point, exactly as the
+     tag clears the top one — otherwise the caption is sliced in half */
+  padding:26px 26px clamp(62px,5.8vw,86px);
+}
+.mslide__cap{
+  font-family:var(--display);font-weight:400;
+  font-size:19px;line-height:1.25;letter-spacing:-.018em;
+  color:var(--paper-hi);
+}
+.marquee__hint{
+  margin:clamp(24px,2.6vw,38px) 0 0;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+
+@media (max-width:680px){
+  .mslide{width:62vw}
+}
+
+/* ---------- section 6 : the app ---------- */
+/* One frame, and the phone in front of the type — the same rule the hero and
+   the anatomy already follow, so this reads as the same page rather than a new
+   idea. height (not min-height) keeps the chain definite all the way down to
+   the image, which is what lets the phone size itself off the viewport. */
+.app{
+  height:100vh;min-height:620px;
+  padding:clamp(80px,8vh,110px) var(--pad) clamp(40px,5vh,64px);
+  background:var(--olive);color:var(--paper-hi);
+  display:grid;grid-template-columns:1fr minmax(0,42%);
+  gap:clamp(40px,5vw,96px);align-items:center;
+  position:relative;overflow:hidden;
+}
+.app__copy{align-self:center;max-width:46ch;position:relative;z-index:1}
+.app__label{
+  margin:0 0 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(232,233,223,.5);
+}
+.app__h{
+  margin:0 0 18px;max-width:15ch;
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(28px,3.4vw,52px);line-height:1.08;letter-spacing:-.03em;
+}
+.app__p{margin:0 0 30px;max-width:40ch;font-size:16px;line-height:1.6;color:rgba(232,233,223,.7)}
+.app__list{list-style:none;margin:0;padding:0}
+.app__list li{
+  padding:13px 0;border-top:1px solid rgba(232,233,223,.14);
+  font-size:13.5px;line-height:1.5;color:rgba(232,233,223,.58);
+}
+.app__list span{display:block;margin-bottom:2px;font-size:15px;font-weight:500;color:var(--paper-hi)}
+
+.app__stage{position:relative;z-index:1;height:100%;min-height:0;display:grid;place-items:center}
+/* the screen appearing to light the section it sits on */
+.app__stage::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(44% 40% at 50% 48%,rgba(169,184,135,.22),transparent 72%);
+}
+/* Spans the section, not the stage: centred on the page so the phone occludes
+   its tail. Behind a 42% column it was hidden almost entirely and read as
+   noise rather than type. */
+.app__back{
+  position:absolute;left:50%;bottom:clamp(14px,3vh,42px);
+  transform:translateX(-50%);z-index:0;
+  margin:0;white-space:nowrap;pointer-events:none;
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(58px,8.6vw,158px);line-height:.84;letter-spacing:-.05em;
+  color:rgba(232,233,223,.11);
+}
+.app__phone{
+  position:relative;z-index:1;height:100%;min-height:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.app__phone img{
+  display:block;width:auto;height:auto;max-width:100%;max-height:100%;
+  filter:drop-shadow(0 34px 60px rgba(10,16,8,.52));
+  transform:translateY(28px);opacity:0;
+  transition:transform .9s var(--ease),opacity .7s var(--ease);
+}
+.app.is-in .app__phone img{transform:none;opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .app__phone img{transform:none;opacity:1;transition:none}
+}
 
 /* ---------- section 8 : support ---------- */
 .support{
