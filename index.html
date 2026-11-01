@@ -18,18 +18,18 @@
 
 <header class="nav">
   <div class="nav__group">
-    <a class="nav__brand" href="/">LumiLife</a>
+    <span class="nav__brand">LumiLife</span>
     <nav class="nav__links" aria-label="Primary">
-      <a href="#anatomy">Glasses</a>
-      <a href="#ring">Ring</a>
-      <a href="#app">App</a>
-      <a href="#about">About</a>
+      <a href="#top">Home</a>
+      <a href="#lifestyle">Gallery</a>
     </nav>
   </div>
 
-  <div class="nav__group nav__group--center" role="group" aria-label="Choose a product">
-    <a class="chip is-active" href="#anatomy">Glasses</a>
-    <a class="chip" href="#ring">Ring</a>
+  <div class="nav__group nav__group--center" role="tablist" aria-label="Choose a product">
+    <button class="chip is-active" type="button" role="tab" id="tab-glasses"
+            aria-selected="true" aria-controls="panel-glasses">Glasses</button>
+    <button class="chip" type="button" role="tab" id="tab-ring"
+            aria-selected="false" aria-controls="panel-ring">Ring</button>
   </div>
 
   <div class="nav__group nav__group--end">
@@ -41,6 +41,9 @@
 </header>
 
 <main>
+
+<!-- Product tabs. Same page, same scroll grammar, one product at a time. -->
+<div class="panel is-active" id="panel-glasses" role="tabpanel" aria-labelledby="tab-glasses">
 
 <!-- Sections 1 + 2: one scroll stage. Static hero -> exploded anatomy. -->
 <div class="stage" id="top">
@@ -64,19 +67,20 @@
 
     <!-- hero copy -->
     <div class="layer layer--hero">
-      <p class="spec spec--trust">
-        <span class="spec__label">Why trust us</span>
-        <span>NVIDIA Inception member</span>
-        <span>Designed and built in Berlin</span>
-        <span>Privacy by design</span>
-      </p>
+      <div class="spec spec--trust">
+        <p class="spec__label">Why trust us</p>
+        <ul class="spec__list">
+          <li>NVIDIA Inception member</li>
+          <li>Designed and built in Berlin</li>
+          <li>Privacy by design</li>
+        </ul>
+      </div>
 
       <div class="lead">
         <p class="lead__eyebrow">LumiLife Glasses</p>
         <p class="lead__text">Glasses you already wanted to wear, with an assistant that answers out loud, handles 50+ everyday tasks and remembers the details you don't.</p>
         <div class="actions">
-          <a class="btn btn--primary btn--lg" href="#buy">Add to cart</a>
-          <a class="btn btn--quiet" href="#anatomy">See what's inside</a>
+          <a class="btn btn--quiet btn--quiet-lg" href="#anatomy">See what's inside</a>
         </div>
       </div>
 
@@ -88,66 +92,363 @@
       <div class="lead lead--anatomy">
         <h2 class="lead__h">Every part of it, and not one looks like a computer</h2>
         <p class="lead__text">Camera, microphones, speaker and the processor that runs Lumi — all of it inside a frame you would wear anyway.</p>
-        <div class="actions">
-          <a class="btn btn--primary btn--lg" href="#buy">Add to cart</a>
-          <a class="btn btn--quiet" href="#ring">Or look at the Ring</a>
-        </div>
+
       </div>
 
       <ul class="callouts">
-        <li class="callout" style="--x:6.2%;--y:20.7%"><span class="callout__dot"></span><span class="callout__text"><b>Speaker</b>Aimed at your ear, not at the room</span></li>
-        <li class="callout callout--up" style="--x:24.1%;--y:25%;--lift:185px"><span class="callout__dot"></span><span class="callout__text"><b>Camera module</b>Looks where you look, lens stack and all</span></li>
-        <li class="callout callout--up" style="--x:43.3%;--y:26.6%;--lift:195px"><span class="callout__dot"></span><span class="callout__text"><b>Lumi processor</b>Runs on the glasses, not in a data centre</span></li>
-        <li class="callout callout--down" style="--x:69.4%;--y:39.1%;--lift:120px"><span class="callout__dot"></span><span class="callout__text"><b>Hinge</b>Milled steel, folds like ordinary glasses</span></li>
-        <li class="callout callout--down" style="--x:26.7%;--y:72%"><span class="callout__dot"></span><span class="callout__text"><b>Lenses</b>Clear, tinted or your own prescription</span></li>
+        <li class="callout" style="--xf:.076;--yf:.212;--ty:.01"><span class="callout__dot"></span><span class="callout__text"><b>Speaker</b>Aimed at your ear, not at the room</span></li>
+        <li class="callout" style="--xf:.249;--yf:.245;--ty:.20"><span class="callout__dot"></span><span class="callout__text"><b>Camera module</b>Looks where you look, lens stack and all</span></li>
+        <li class="callout callout--right callout--key" style="--xf:.442;--yf:.277;--ty:.09"><span class="callout__dot"></span><span class="callout__text"><b>Lumi processor</b>Runs on the glasses, not in a data centre</span></li>
+        <li class="callout callout--right" style="--xf:.758;--yf:.367;--ty:.30"><span class="callout__dot"></span><span class="callout__text"><b>Hinge</b>Milled steel, folds like ordinary glasses</span></li>
+        <li class="callout" style="--xf:.175;--yf:.609;--ty:.41"><span class="callout__dot"></span><span class="callout__text"><b>Lenses</b>Clear, tinted or your own prescription</span></li>
       </ul>
     </div>
 
   </div>
 </div>
 
+</div><!-- /panel-glasses -->
+
+<div class="panel" id="panel-ring" role="tabpanel" aria-labelledby="tab-ring" hidden>
+
+<!-- The Ring, built on the same stage: hero -> exploded anatomy. -->
+<div class="stage stage--ring">
+  <div class="stage__sticky">
+
+    <h1 class="backtype">
+      <span class="bt bt--a">Quiet</span>
+      <span class="bt bt--b"><span class="bt__small">on your</span> Hand</span>
+    </h1>
+
+    <p class="backtype backtype--alt" aria-hidden="true">
+      <span class="bt bt--b"><span class="bt__small">Anatomy of the</span> Ring</span>
+    </p>
+
+    <div class="product">
+      <img class="product__img product__img--whole" src="assets/img/ring.png"
+           alt="LumiLife Ring in matte olive with a polished titanium edge" width="1135" height="1100" loading="lazy">
+      <img class="product__img product__img--parts" src="assets/img/ring-exploded.png"
+           alt="LumiLife Ring taken apart: olive outer shell, flexible circuit board, battery liner and the inner sensor ring" width="1024" height="1024" loading="lazy">
+    </div>
+
+    <div class="layer layer--hero">
+      <div class="spec spec--trust">
+        <p class="spec__label">Why trust us</p>
+        <ul class="spec__list">
+          <li>NVIDIA Inception member</li>
+          <li>Designed and built in Berlin</li>
+          <li>Privacy by design</li>
+        </ul>
+      </div>
+
+      <div class="lead">
+        <p class="lead__eyebrow">LumiLife Ring</p>
+        <p class="lead__text">Heart rate, continuously, from a band you forget you are
+          wearing. It talks to the same Lumi the glasses do — so what it notices,
+          Lumi already knows.</p>
+        <div class="actions">
+          <a class="btn btn--quiet btn--quiet-lg" href="#ring-anatomy">See what's inside</a>
+        </div>
+      </div>
+
+      <p class="scrollcue"><span>Scroll</span></p>
+    </div>
+
+    <div class="layer layer--anatomy" id="ring-anatomy">
+      <div class="lead lead--anatomy">
+        <h2 class="lead__h">Four layers, and none of them look like a sensor</h2>
+        <p class="lead__text">A shell, a board that bends, the cell that runs it for
+          days, and the optics that read your pulse — stacked into something you
+          would wear as jewellery.</p>
+      </div>
+
+      <ul class="callouts">
+        <li class="callout" style="--xf:.395;--yf:.212;--ty:.04"><span class="callout__dot"></span><span class="callout__text"><b>Outer shell</b>Matte olive over titanium, scratch takes the hit first</span></li>
+        <li class="callout callout--right" style="--xf:.692;--yf:.346;--ty:.10"><span class="callout__dot"></span><span class="callout__text"><b>Flexible board</b>Bends to the curve, so the ring stays thin</span></li>
+        <li class="callout" style="--xf:.375;--yf:.553;--ty:.40"><span class="callout__dot"></span><span class="callout__text"><b>Battery liner</b>Days of wear between charges</span></li>
+        <li class="callout callout--right callout--key" style="--xf:.642;--yf:.731;--ty:.42"><span class="callout__dot"></span><span class="callout__text"><b>Sensor ring</b>Optical heart rate, read against the skin</span></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /panel-ring -->
+
 <!-- Section 3: the canvas. No chrome, no cart — the idea, and why to trust it. -->
 <section class="canvas" id="idea" aria-labelledby="idea-h">
+  <!-- Rotating trust seal. aria-hidden on purpose: it says nothing the .trust
+       list below does not already say in full, so to a screen reader it is a
+       duplicate, not a loss. -->
+  <div class="seal" aria-hidden="true">
+    <svg class="seal__ring" viewBox="0 0 112 112">
+      <defs>
+        <path id="seal-path" fill="none"
+              d="M56,56 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/>
+      </defs>
+      <text><textPath href="#seal-path">NVIDIA INCEPTION &#183; ELEVENLABS GRANTS &#183; </textPath></text>
+    </svg>
+    <span class="seal__dot"></span>
+  </div>
+
   <p class="canvas__label">The idea</p>
 
   <div class="canvas__body">
     <h2 class="canvas__h" id="idea-h">
-      Ambient means it waits.<br>
+      <!-- nbsp binds the last two words of each sentence: text-wrap:balance was
+           measured and does not cross the <br>, so it left "day." stranded. -->
+      Ambient means it&nbsp;waits.<br>
       Lumi answers when you ask, remembers what you'll
-      need later, and is quiet the rest of the day.
+      need later, and is quiet the rest of the&nbsp;day.
     </h2>
 
     <div class="asks">
-      <p class="asks__label">What people ask Lumi</p>
+      <p class="asks__label">Reasons to wear it</p>
       <ul class="asks__list">
-        <li>What's this in euros</li>
-        <li>Read the label out loud</li>
-        <li>Remind me where I parked</li>
-        <li>Call Mira back after six</li>
-        <li>Where did I put my passport</li>
-        <li>What was that place Anna mentioned</li>
+        <li>Conversations translated while they happen.</li>
+        <li>Notes you never stopped to write down.</li>
+        <li>Captured on command. Nothing to reach for.</li>
+        <li>Where you parked. What a friend recommended.</li>
+        <li>"Call her back at six" &mdash; and at six, it does.</li>
       </ul>
-      <p class="asks__note">Fifty more like them, and it keeps the answers to itself.</p>
+      <p class="asks__note">Fifty more like these, and every one of them stays on the glasses.</p>
     </div>
   </div>
 
   <ul class="trust">
     <li class="trust__item">
-      <span class="trust__k">NVIDIA Inception</span>
+      <span class="trust__head"><svg class="trust__icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="6" r="2"/><circle cx="15.5" cy="6" r="2"/><circle cx="10" cy="15.5" r="2"/><path d="M6.5 6h7M5.6 7.7 8.7 13.6M14.4 7.7 11.3 13.6"/></svg><span class="trust__k">NVIDIA Inception</span></span>
       <span class="trust__v">Part of NVIDIA's Inception programme for the work behind Lumi.</span>
     </li>
     <li class="trust__item">
-      <span class="trust__k">Berlin</span>
+      <span class="trust__head"><svg class="trust__icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8.6v2.8M6.5 5.6v8.8M10 3.4v13.2M13.5 6.4v7.2M17 8.9v2.2"/></svg><span class="trust__k">ElevenLabs Grants</span></span>
+      <span class="trust__v">Supported through the ElevenLabs Grants programme for the voice Lumi speaks with.</span>
+    </li>
+    <li class="trust__item">
+      <span class="trust__head"><svg class="trust__icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s5.8-5.4 5.8-9.4A5.8 5.8 0 0 0 4.2 8.6C4.2 12.6 10 18 10 18Z"/><circle cx="10" cy="8.5" r="2.2"/></svg><span class="trust__k">Berlin</span></span>
       <span class="trust__v">Designed and engineered here. One address, one company behind it.</span>
     </li>
     <li class="trust__item">
-      <span class="trust__k">Privacy by design</span>
+      <span class="trust__head"><svg class="trust__icon" viewBox="0 0 20 20" aria-hidden="true"><rect x="3.6" y="9" width="12.8" height="8.2" rx="2.4"/><path d="M6.8 9V6.6a3.2 3.2 0 0 1 6.4 0V9"/></svg><span class="trust__k">Privacy by design</span></span>
       <span class="trust__v">Lumi runs on the glasses. What it hears and sees stays on the device.</span>
     </li>
   </ul>
 </section>
 
+
+<!-- Section 4: the collection. Two cards, one per product. Every claim here is
+     already made in sections 1-3 — nothing new is asserted. The four spec rows
+     are marked pending rather than filled with plausible numbers: price,
+     battery, weight and box contents are still unknown. -->
+<section class="collection" id="buy" aria-labelledby="collection-h">
+  <div class="collection__top">
+    <p class="collection__label">The collection</p>
+    <h2 class="collection__h" id="collection-h">Two to wear. One assistant.</h2>
+  </div>
+
+  <ul class="cards">
+    <li class="card">
+      <div class="card__media">
+        <img src="assets/img/glasses-assembled.png" width="1431" height="457" loading="lazy"
+             alt="LumiLife Glasses in matte olive, three-quarter view">
+      </div>
+      <div class="card__body">
+        <h3 class="card__name">LumiLife Glasses</h3>
+        <p class="card__text">A camera, a directional speaker, a microphone array and the
+          Lumi processor — inside a frame you would wear anyway.</p>
+        <div class="card__price">
+          <span class="card__price-k">Price</span>
+          <span class="card__price-v">&euro;320</span>
+          <button class="card__add" type="button" data-add-to-cart="LumiLife Glasses" data-price="320"
+                  aria-label="Add LumiLife Glasses to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2.5 3.5h2.4l2.1 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.3l1.4-7.2H6"/></svg><svg class="card__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg></button>
+        </div>
+      </div>
+    </li>
+
+    <li class="card">
+      <div class="card__media">
+        <img src="assets/img/ring.png" width="1135" height="1100" loading="lazy"
+             alt="LumiLife Ring in matte olive with a polished titanium edge">
+      </div>
+      <div class="card__body">
+        <h3 class="card__name">LumiLife Ring</h3>
+        <p class="card__text">Optical heart rate read against the skin, in something you would
+          wear as jewellery.</p>
+        <div class="card__price">
+          <span class="card__price-k">Price</span>
+          <span class="card__price-v">&euro;179</span>
+          <button class="card__add" type="button" data-add-to-cart="LumiLife Ring" data-price="179"
+                  aria-label="Add LumiLife Ring to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/><path d="M2.5 3.5h2.4l2.1 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.3l1.4-7.2H6"/></svg><svg class="card__tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg></button>
+        </div>
+      </div>
+    </li>
+  </ul>
+</section>
+
+
+
+<!-- Section 5: before / after gallery. An rAF marquee, not a CSS keyframe:
+     the strip crawls, you can grab it, and it coasts on released momentum
+     before resuming. The track is duplicated in JS so the markup stays one
+     source of truth. ALL EIGHT slides are placeholders, awaiting the real
+     before/after comps. -->
+<section class="marquee" id="lifestyle" aria-labelledby="marquee-h">
+  <p class="marquee__label">Before / After</p>
+  <h2 class="marquee__h" id="marquee-h">Same day. Fewer things to&nbsp;hold.</h2>
+
+  <div class="marquee__strip">
+    <svg class="marquee__mask marquee__mask--top" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 0H1440V50C1440 50 1200 100 720 100C240 100 0 50 0 50V0Z"/>
+    </svg>
+    <ul class="marquee__track">
+      <li class="mslide mslide--empty"><span class="mslide__tag">Before</span><span class="mslide__cap">Too much to remember.</span></li>
+      <li class="mslide mslide--empty"><span class="mslide__tag">After</span><span class="mslide__cap">A clearer mind.</span></li>
+      <li class="mslide mslide--empty"><span class="mslide__tag">Before</span><span class="mslide__cap">Out all day. So much to manage.</span></li>
+      <li class="mslide mslide--empty"><span class="mslide__tag">After</span><span class="mslide__cap">Every step, simplified.</span></li>
+      <li class="mslide mslide--empty"><span class="mslide__tag">Before</span><span class="mslide__cap">So much to juggle.</span></li>
+      <li class="mslide mslide--empty"><span class="mslide__tag">After</span><span class="mslide__cap">Keep it all together.</span></li>
+      <li class="mslide mslide--empty"><span class="mslide__tag">Before</span><span class="mslide__cap">Busy mind. Full day.</span></li>
+      <li class="mslide mslide--empty"><span class="mslide__tag">After</span><span class="mslide__cap">More calm. More you.</span></li>
+    </ul>
+    <svg class="marquee__mask marquee__mask--bottom" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 100H1440V50C1440 50 1200 0 720 0C240 0 0 50 0 50V100Z"/>
+    </svg>
+  </div>
+
+  <p class="marquee__hint">Drag to explore</p>
+</section>
+
+<!-- Section 6: the app. Obeys the page's own rule rather than inventing a new
+     layout: the product always occludes the display type. The glasses do it in
+     the hero, the exploded parts do it over "ANATOMY OF THE", and the phone
+     does it here. The backdrop was flood-filled off the render so the device
+     sits on the section instead of in a green box. -->
+<section class="app" id="app" aria-labelledby="app-h">
+  <div class="app__copy">
+    <p class="app__label">The app</p>
+    <h2 class="app__h" id="app-h">The glasses ask. The app keeps the&nbsp;thread.</h2>
+    <p class="app__p">Lumi does the noticing. The app is where it adds up.</p>
+    <ul class="app__list">
+      <li><span>Weekly planner</span>The days ahead, weather already in them.</li>
+      <li><span>Outfits by Lumi</span>From clothes you already own.</li>
+      <li><span>Style Mirror</span>Live camera, and Lumi's read on it.</li>
+      <li><span>Health, social, learning</span>The rest of the day, same place.</li>
+    </ul>
+  </div>
+
+  <p class="app__back" aria-hidden="true">In your pocket</p>
+
+  <div class="app__stage">
+    <div class="app__phone">
+      <img src="assets/img/app-phone.webp" width="712" height="1465" loading="lazy"
+           alt="The LumiLife app: a weekly planner with the weather, an outfit suggested for the day, and the next thing in the calendar.">
+    </div>
+  </div>
+</section>
+
+<!-- Section 7: beta testers. Every quote is a PLACEHOLDER — no real tester has
+     been quoted, and nothing here should ship as a testimonial until it is. -->
+<section class="voices" id="testers" aria-labelledby="voices-h">
+  <p class="voices__label">Beta testers</p>
+  <h2 class="voices__h" id="voices-h">What our testers say.</h2>
+  <ul class="voices__grid">
+    <li class="voicecard"><p class="voicecard__q">Quote to come.</p><p class="voicecard__who"><span>Tester name</span>Cohort, city</p></li>
+    <li class="voicecard"><p class="voicecard__q">Quote to come.</p><p class="voicecard__who"><span>Tester name</span>Cohort, city</p></li>
+    <li class="voicecard"><p class="voicecard__q">Quote to come.</p><p class="voicecard__who"><span>Tester name</span>Cohort, city</p></li>
+  </ul>
+</section>
+
+<!-- Section 8: support. The contact card hangs as a pinned sheet you can grab
+     and tug — simple Verlet cloth on a 2D canvas, no WebGL and no library.
+     The text is real HTML ON TOP of the sheet, never painted into it: an email
+     you cannot select, search or hear read out is a worse contact section
+     however good it looks.
+     Topics only, no policy. Warranty terms, return windows and repair pricing
+     are NOT known — do not write them here from memory. -->
+<section class="support" id="support" aria-labelledby="support-h">
+  <div class="support__copy">
+    <p class="support__label">Support</p>
+    <h2 class="support__h" id="support-h">Hardware someone answers&nbsp;for.</h2>
+    <ul class="support__topics">
+      <li><span>Fit and lenses</span>Frame sizing, and your own prescription in them.</li>
+      <li><span>Ring sizing</span>Getting the size right before it ships.</li>
+      <li><span>Repairs and parts</span>Hinges, temples, liners and chargers.</li>
+    </ul>
+  </div>
+
+  <div class="sheet" data-sheet>
+    <canvas class="sheet__cloth" role="img"
+            aria-label="A hanging green cloth printed with: Ask us anything. Out loud, if you like. Based in Berlin. Plus 49 30, number to confirm."></canvas>
+    <!-- the print is painted into the canvas, so it deforms with the cloth and
+         is invisible to find-in-page, copy and screen readers. This keeps it
+         all three. -->
+    <p class="sheet__alt">
+      <b>Ask us anything. Out loud, if you like.</b>
+      Based in Berlin. <span class="is-pending">+49 30 — number to confirm</span>
+    </p>
+  </div>
+</section>
+
 </main>
+
+<!-- The footer sits behind the page and is revealed as the content scrolls off
+     it. clip-path:inset(0) on the wrapper makes it a containing block for the
+     fixed footer, which is what scopes the effect without any scroll listener.
+     The wrapper's height is set from the footer in js/site.js. -->
+<div class="revealwrap">
+  <footer class="footer" id="footer">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <p class="footer__mark">LumiLife</p>
+        <p class="footer__tag">Ambient AI for real life. Smart glasses and a ring,
+          with an assistant that runs on the device.</p>
+      </div>
+
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <p class="footer__h">The site</p>
+          <a href="#top">Home</a><a href="#lifestyle">Gallery</a>
+          <a href="#app">The app</a><a href="#idea">The idea</a>
+        </div>
+        <div>
+          <p class="footer__h">Products</p>
+          <a href="#buy">Glasses</a><a href="#buy">Ring</a>
+          <a href="#cart">Cart</a><a href="#testers">Beta testers</a>
+        </div>
+        <div>
+          <p class="footer__h">Contact</p>
+          <a href="#support">Support</a>
+          <p class="footer__line">Berlin, Germany</p>
+          <p class="footer__line is-pending">+49 30 &#8226;&#8226;&#8226;&#8226; &#8226;&#8226;&#8226;&#8226;</p>
+        </div>
+      </nav>
+
+      <div class="footer__shot" aria-hidden="true">
+        <img src="assets/img/app-phone.webp" width="712" height="1465" loading="lazy" alt="">
+      </div>
+
+      <div class="footer__get">
+        <p class="footer__h2">Get the app</p>
+        <p class="footer__tag">The week ahead, what to wear, and the thing you said
+          you would do &mdash; wherever you left it.</p>
+        <!-- Placeholders. The real App Store and Google Play badges are
+             trademarked artwork with mandated clear space and sizing; they have
+             to come from Apple's and Google's marketing resources, not be
+             redrawn. Swap these two spans for the official assets. -->
+        <ul class="stores">
+          <li class="storebtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M10.6 5.6h2.8"/></svg><span><small>Coming soon on</small>iOS</span></li>
+          <li class="storebtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M10.6 5.6h2.8"/></svg><span><small>Coming soon on</small>Android</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <p>&copy; 2026 LumiLife. Berlin.</p>
+      <p class="footer__legal is-pending">Legal and privacy pages to come</p>
+    </div>
+  </footer>
+</div>
+
 
 <script type="application/ld+json">
 {
@@ -177,12 +478,44 @@
       "brand": { "@id": "https://lumilife.online/#org" },
       "category": "AI smart glasses",
       "description": "AI smart glasses with a camera, directional speaker, microphone array and an on-device processor running Lumi, an assistant that answers hands-free and remembers details for you.",
-      "image": "https://lumilife.online/assets/img/glasses-assembled.png"
+      "image": "https://lumilife.online/assets/img/glasses-assembled.png",
+      "offers": { "@type": "Offer", "price": "320.00", "priceCurrency": "EUR" }
+    },
+    {
+      "@type": "Product",
+      "@id": "https://lumilife.online/#ring",
+      "name": "LumiLife Ring",
+      "brand": { "@id": "https://lumilife.online/#org" },
+      "category": "Smart ring",
+      "description": "A titanium smart ring with an optical heart-rate sensor, worn as jewellery and connected to Lumi, the same on-device assistant that runs on the LumiLife Glasses.",
+      "image": "https://lumilife.online/assets/img/ring.png",
+      "offers": { "@type": "Offer", "price": "179.00", "priceCurrency": "EUR" }
     }
   ]
 }
 </script>
 
 <script src="js/site.js" defer></script>
+<!-- Cart. A drawer rather than a separate page, so #cart resolves without
+     leaving the one-page document. Contents are rendered from the in-memory
+     cart in js/site.js; there is no backend, so Checkout is inert. -->
+<aside class="cart" id="cart" hidden>
+  <div class="cart__scrim" data-cart-close></div>
+  <div class="cart__panel" role="dialog" aria-modal="true" aria-labelledby="cart-h">
+    <header class="cart__top">
+      <h2 class="cart__h" id="cart-h">Cart</h2>
+      <button class="cart__close" type="button" data-cart-close aria-label="Close cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </header>
+
+    <p class="cart__empty">Nothing in here yet.</p>
+    <ul class="cart__items"></ul>
+
+    <footer class="cart__foot">
+      <p class="cart__total"><span>Subtotal</span><span class="cart__sum">&euro;0</span></p>
+      <button class="btn btn--primary btn--lg cart__checkout" type="button">Checkout</button>
+    </footer>
+  </div>
+</aside>
+
 </body>
 </html>

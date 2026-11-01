@@ -8,6 +8,11 @@
   --paper-hi:#EFF0E8;
   --sage:#A9B887;
   --olive:#2E3D28;
+  /* Sun yellow is NOT a fourth scheme colour — it is the signal. Yellow is the
+     first thing the eye lands on, so it is spent on one indicator per stage and
+     nowhere else. If it starts appearing twice on a screen it has stopped
+     working. ponytail: a token with the rule written on it. */
+  --signal:#F9B318;
 
   --ink:var(--olive);
   --ink-2:rgba(46,61,40,.68);
@@ -27,6 +32,11 @@
   --p3:0;  /* 0..1  anatomy copy arrives */
 
   /* calibration knobs: align the exploded frame onto the assembled frame */
+  /* the exploded stage: render and callouts share this box, so changing the
+     size can never desync the labels from the parts they point at.
+     ponytail: two custom properties beat two matching magic numbers. */
+  --stage-shift:3vh;
+
   --parts-scale:1.085;
   --parts-x:-1.1%;
   --parts-y:2.4%;
@@ -34,6 +44,12 @@
 
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
+/* clip, NOT hidden: the panel entry animation scales .stage__sticky from 1.04,
+   and that element is already 100vw, so it overhangs for the length of the
+   animation and flashes a horizontal scrollbar on load. overflow-x:hidden
+   would fix it by making the root a scroll container — which breaks every
+   position:sticky stage on the page. clip does not. */
+html{overflow-x:clip}
 body{
   margin:0;
   background:var(--paper);
@@ -77,6 +93,12 @@ ul{margin:0;padding:0;list-style:none}
 .nav__links a:hover,.chip:hover{background:rgba(46,61,40,.06);color:var(--ink)}
 .chip.is-active{background:rgba(46,61,40,.08);color:var(--ink)}
 .nav__group--end{padding-right:6px}
+/* ponytail: absolute centring, because space-between centres it between its
+   neighbours — which drift as the brand group changes width. */
+.nav__group--center{
+  position:absolute;left:50%;transform:translateX(-50%);
+  transition:opacity .22s var(--ease),visibility 0s;
+}
 .nav__cart{
   display:grid;place-items:center;width:36px;height:36px;margin-left:4px;
   border-radius:12px;corner-shape:squircle;color:var(--ink-2);
@@ -101,7 +123,33 @@ ul{margin:0;padding:0;list-style:none}
 .btn--quiet:hover{color:var(--ink)}
 
 /* ---------- the stage ---------- */
-.stage{height:240vh;position:relative}
+/* The exploded stage sizes off BOTH axes. Labels live in the two SIDE gutters
+   (plus one below), so width is what they cost now, not height — hence the
+   render is a good deal bigger than it was.
+   --gutter is the room one label column needs; --box-ar is the render's aspect. */
+.stage{
+  height:240vh;position:relative;
+  --box-ar:1.614;
+  --gutter:220px;
+  --stagebox:min(1040px,calc(100vw - var(--gutter) * 2),calc((100vh - 230px) * var(--box-ar)));
+  /* leader lines are fractions of this, so a label cannot outgrow its stage */
+  --stageh:calc(var(--stagebox) / var(--box-ar));
+}
+.stage--ring{--box-ar:1;--parts-scale:1;--parts-x:0%;--parts-y:0%}
+/* The ring renders carry a vignetted studio backdrop, so normalising against a
+   single median leaves a faint rectangle. Feather the edges instead of chasing
+   a perfect flat-field — ponytail: a mask is four lines, a better estimator is
+   an afternoon. */
+.stage--ring .product__img{
+  -webkit-mask-image:
+    linear-gradient(to right,transparent,#000 6%,#000 94%,transparent),
+    linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent);
+  mask-image:
+    linear-gradient(to right,transparent,#000 6%,#000 94%,transparent),
+    linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent);
+  -webkit-mask-composite:source-in;
+  mask-composite:intersect;
+}
 .stage__sticky{
   position:sticky;top:0;height:100vh;overflow:hidden;
   /* the blend target: without a painted backdrop here, multiply has nothing to
@@ -131,8 +179,8 @@ ul{margin:0;padding:0;list-style:none}
 /* ---------- the product ---------- */
 .product{
   position:absolute;z-index:2;pointer-events:none;
-  left:50%;top:50%;width:min(1000px,63vw);
-  transform:translate(-50%,-50%);
+  left:50%;top:50%;width:var(--stagebox);
+  transform:translate(-50%,calc(-50% + var(--stage-shift)));
   mix-blend-mode:multiply;           /* studio white drops out onto the paper */
 }
 .product__img{position:absolute;left:0;width:100%}
@@ -158,15 +206,28 @@ ul{margin:0;padding:0;list-style:none}
 /* spec micro-list — the signature detail */
 .spec{
   position:absolute;top:104px;right:var(--pad);margin:0;
-  display:flex;flex-direction:column;align-items:flex-end;gap:7px;
-  font-size:12px;line-height:1.2;color:var(--ink-2);
+  display:flex;flex-direction:column;align-items:flex-end;
   text-align:right;
 }
-.spec span{display:block}
 .spec__label{
+  margin:0 0 9px;padding-bottom:7px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--ink-3);padding-bottom:9px;margin-bottom:2px;
-  border-bottom:1px solid var(--hairline);min-width:168px;
+  color:var(--ink-3);min-width:168px;
+  border-bottom:1px solid var(--hairline);
+}
+.spec__list{
+  margin:0;padding:0;list-style:none;
+  display:flex;flex-direction:column;gap:7px;
+}
+/* presence comes from the spacing and the rule, not from weight —
+   ponytail: colour and gap only, no font-weight anywhere in here */
+.spec__list li{
+  font-size:12.5px;line-height:1.25;color:var(--ink-2);
+  padding-right:13px;position:relative;
+}
+.spec__list li::after{
+  content:"";position:absolute;right:0;top:.56em;
+  width:4px;height:4px;border-radius:50%;background:rgba(169,184,135,.85);
 }
 
 /* bottom-left copy block */
@@ -191,31 +252,62 @@ ul{margin:0;padding:0;list-style:none}
 
 /* ---------- callouts over the exploded render ---------- */
 .callouts{
-  position:absolute;left:50%;top:50%;width:min(1000px,63vw);
-  aspect-ratio:1530/948;transform:translate(-50%,-50%);
+  position:absolute;left:50%;top:50%;width:var(--stagebox);
+  aspect-ratio:var(--box-ar);transform:translate(-50%,calc(-50% + var(--stage-shift)));
 }
-.callout{position:absolute;left:var(--x);top:var(--y)}
+.callout{
+  position:absolute;left:calc(var(--xf) * 100%);top:calc(var(--yf) * 100%);
+  /* --ty is the LABEL's slot in the column, --yf is the dot on the render.
+     Decoupling them is the whole trick: labels get an even rhythm down the
+     gutter and the leader elbows out to meet the dot, so no label has to sit
+     where its part happens to be — which is what pushed text over the render. */
+  --dy:calc((var(--ty,var(--yf)) - var(--yf)) * var(--stageh));
+  /* THE BAND RULE: the stage splits in two. The lower band is the headline and
+     the wordmark's — no label may enter it, whatever its part is doing down
+     there; that is what the elbow exists for. Keep --ty <= .52 on the glasses
+     and <= .44 on the ring (its render is square, so the box is shorter and
+     every slot lands lower). Collisions here are always this rule being broken,
+     never a label being too wide. */
+}
 .callout__dot{
   position:absolute;left:0;top:0;width:7px;height:7px;
   border-radius:50%;background:var(--olive);
 }
+/* label: parked off the stage edge, at its own height */
 .callout__text{
-  position:absolute;right:56px;top:-4px;width:172px;text-align:right;
+  position:absolute;width:184px;text-align:right;
+  top:calc(var(--dy) - 4px);
+  right:calc(var(--stagebox) * var(--xf) + 22px);
   font-size:12px;line-height:1.35;color:var(--ink-2);
 }
 .callout__text b{display:block;font-weight:500;font-size:13px;color:var(--ink);margin-bottom:3px}
-/* leader rule */
-.callout__dot::after{
-  content:"";position:absolute;top:3px;right:11px;
-  width:40px;height:1px;background:var(--hairline);
+/* The leader is ONE bordered box, not two hairlines butted together: the
+   corner is then a real rounded join that cannot drift apart. Its lower/inner
+   edge lands exactly on the dot's centre (3px), which is what the old
+   right:0-vs-left:3px pair got wrong at every corner.
+   ponytail: requires --ty <= --yf (every label sits at or above its part).
+   That now holds for all nine, so there is no flipped variant — put a label
+   below its dot and the elbow inverts; re-add a border-bottom variant if you
+   ever need one. */
+.callout::before{
+  content:"";position:absolute;
+  border:0 solid var(--hairline);
+  border-top-width:1px;border-right-width:1px;border-top-right-radius:9px;
+  right:-3px;top:calc(var(--dy) + 3px);
+  width:calc(var(--stagebox) * var(--xf) + 17px);
+  height:calc(var(--dy) * -1);
 }
-.callout--right .callout__text{right:auto;left:56px;text-align:left}
-.callout--right .callout__dot::after{right:auto;left:11px}
-.callout--up .callout__text{right:auto;left:50%;transform:translateX(-50%);top:auto;bottom:var(--lift,46px);text-align:center;width:164px}
-.callout--up .callout__dot::after{top:auto;right:auto;left:3px;bottom:11px;width:1px;height:calc(var(--lift,46px) - 12px)}
-.callout--down .callout__text{right:auto;left:50%;transform:translateX(-50%);top:var(--lift,46px);text-align:center;width:164px}
-.callout--down .callout__dot::after{top:11px;right:auto;left:3px;width:1px;height:calc(var(--lift,46px) - 12px)}
-
+.callout--key .callout__dot{background:var(--signal)}
+.callout--right .callout__text{
+  right:auto;text-align:left;
+  left:calc(var(--stagebox) * (1 - var(--xf)) + 22px);
+}
+.callout--right::before{
+  right:auto;left:3px;
+  width:calc(var(--stagebox) * (1 - var(--xf)) + 11px);
+  border-right-width:0;border-left-width:1px;
+  border-top-right-radius:0;border-top-left-radius:9px;
+}
 /* ---------- squircle fallback ---------- */
 @supports not (corner-shape:squircle){
   .nav__group,.btn--lg{border-radius:16px}
@@ -240,6 +332,7 @@ ul{margin:0;padding:0;list-style:none}
   .scrollcue{display:none}
   .callouts{display:grid;gap:20px;margin-top:32px}
   .callout{position:static;opacity:1}
+  .callout::before{display:none}
   .callout__dot{display:none}
   .callout__text{position:static;width:auto;text-align:left;transform:none}
 }
@@ -251,13 +344,16 @@ ul{margin:0;padding:0;list-style:none}
 /* ---------- section 3 : the canvas ---------- */
 /* dark counterpoint, and the only place the chrome goes away */
 .canvas{
+  --seal-size:112px;
+  --canvas-top:96px;   /* nav's bottom edge is 76px; clear it */
   position:relative;
   min-height:100vh;
-  padding:var(--pad);
+  padding:var(--canvas-top) var(--pad) var(--pad);
   background:var(--olive);
   color:var(--paper-hi);
   display:grid;
   grid-template-rows:auto 1fr auto;
+  grid-template-columns:minmax(0,1fr);   /* declare it, or the seal invents one */
   gap:48px;
 }
 .canvas__label,.asks__label{
@@ -267,17 +363,55 @@ ul{margin:0;padding:0;list-style:none}
 }
 .canvas__body{
   align-self:center;
-  display:grid;grid-template-columns:minmax(0,1fr) 360px;
-  gap:80px;align-items:start;
+  display:grid;grid-template-columns:1fr 1fr;
+  /* The right column is always the taller of the two, so the heading centres
+     against it rather than hanging off the top. */
+  gap:clamp(64px,7vw,150px);align-items:center;
   padding-bottom:40px;
 }
 .canvas__h{
-  margin:0;max-width:15ch;
+  /* max-width is in ch, so it scales with font-size and the line breaks hold
+     as the type grows — until the column clamps the box. "Ambient means it
+     waits." needs ~12.9em; at 54px the clamped box is ~14.1em, so it still
+     fits. Past ~59px it does not, and "waits." drops to its own line again. */
+  margin:0;max-width:20ch;align-self:center;
   font-family:var(--display);font-weight:400;
-  font-size:clamp(32px,4.1vw,66px);line-height:1.1;letter-spacing:-.03em;
+  font-size:clamp(30px,3.4vw,54px);line-height:1.12;letter-spacing:-.028em;
 }
 
-.asks{padding-top:10px}
+/* ---------- the rotating trust seal ---------- */
+/* GLUED TO THE SECTION, not to the viewport. position:fixed held its screen
+   coordinate correctly — and that was the bug: the section slid underneath it
+   and the seal ended up sitting on the list. Absolute inside .canvas means it
+   travels with the section and leaves with it, so it can never overlap.
+   Out of flow either way, so it takes no part in grid placement — which is what
+   once made the grid invent a second column and throw the body sideways.
+   ponytail: SVG textPath, not 57 absolutely-positioned characters. The circle
+   is a path, the browser does the trigonometry. */
+.seal{
+  position:absolute;top:var(--canvas-top);right:var(--pad);z-index:6;
+  width:var(--seal-size);height:var(--seal-size);display:grid;place-items:center;
+  pointer-events:none;
+}
+.seal__ring{
+  position:absolute;inset:0;width:100%;height:100%;
+  animation:seal-turn 26s linear infinite;
+}
+.seal__ring text{
+  /* 39 chars at ~6.1px advance = ~239px against a 276px circumference. Keep
+     slack: tracking tight enough to close the loop exactly clips the tail on
+     any mono fallback with a wider advance. Shrink the circle again and this
+     is the number that comes down with it. */
+  font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+  fill:rgba(232,233,223,.62);
+}
+.seal__dot{width:6px;height:6px;border-radius:50%;background:var(--sage)}
+@keyframes seal-turn{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){
+  .seal__ring{animation:none}
+}
+
+.asks{padding-top:84px}  /* clears the seal in the corner */
 .asks__list{margin:20px 0 0;display:grid;gap:0}
 .asks__list li{
   padding:15px 0;
@@ -290,11 +424,19 @@ ul{margin:0;padding:0;list-style:none}
 }
 
 .trust{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:56px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:40px;
   padding-top:28px;border-top:1px solid rgba(232,233,223,.18);
 }
+/* mark, hairline, name — all on one line, paragraph beneath */
+.trust__head{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.trust__icon{
+  flex:none;display:block;width:20px;height:20px;
+  color:var(--sage);fill:none;stroke:currentColor;
+  stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;
+}
 .trust__k{
-  display:block;margin-bottom:8px;
+  display:flex;align-items:center;min-height:28px;
+  padding-left:13px;border-left:1px solid rgba(232,233,223,.26);
   font-size:14px;font-weight:500;color:var(--paper-hi);
 }
 .trust__v{
@@ -311,5 +453,551 @@ ul{margin:0;padding:0;list-style:none}
 @media (max-width:1100px){
   .canvas{gap:40px;padding:64px var(--pad)}
   .canvas__body{grid-template-columns:1fr;gap:44px}
+  .seal{display:none}  /* decorative, and the trust list says it all anyway */
   .trust{grid-template-columns:1fr;gap:28px}
+}
+
+/* ---------- section 4 : the collection ---------- */
+/* Back on paper after the olive canvas. The renders are normalised-to-white and
+   composited with multiply, so every surface they sit on has to paint its own
+   background in the same stacking context — .card__media does, for exactly the
+   reason HANDOFF.md gives for .stage__sticky. Drop that line and the renders
+   become white rectangles. */
+.collection{
+  /* One frame, one decision: render -> specs -> CTA all above the fold, so
+     nobody has to scroll to find the button. The section is a 100vh grid and
+     the card media takes whatever height is left over, which is what makes this
+     hold on a short laptop instead of only at 900px. */
+  /* height, not min-height. A percentage only resolves against a DEFINITE
+     height, and `fr` only distributes real free space. With min-height the
+     chain stays indefinite, the media falls back to the image's natural size,
+     and the square ring render drags both cards to 1440px. min-height is the
+     floor below which we give up and let it scroll. */
+  height:100vh;min-height:660px;
+  display:grid;grid-template-rows:auto minmax(0,1fr);
+  padding:96px var(--pad) 40px;
+  background:linear-gradient(to bottom,var(--paper-hi),var(--paper) 42%);
+}
+.collection__top{max-width:30ch;margin-bottom:28px}
+.collection__label{
+  margin:0 0 12px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.collection__h{
+  margin:0;
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(26px,2.6vw,40px);line-height:1.12;letter-spacing:-.028em;
+}
+.cards{
+  list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,3vw,56px);
+  min-height:0;   /* let the row shrink, or the track floors at max-content */
+}
+.card{
+  display:grid;grid-template-rows:minmax(120px,1fr) auto;min-height:0;
+  background:var(--paper-hi);
+  border:1px solid var(--hairline);
+  border-radius:26px;corner-shape:squircle;overflow:hidden;
+}
+.card__media{
+  /* A fixed height, not an aspect ratio: the two renders are 3.1:1 and 1.03:1,
+     so a ratio-sized box lets the square ring balloon to the card's full width
+     while the glasses sit tiny. A height cap contains both to the same band. */
+  /* flex, not grid: in a grid the implicit row is auto-sized, so the image's
+     own height defines the track and max-height:100% resolves against itself —
+     the square ring render blew out to 692px inside a 240px box. A flex
+     container's definite height is what the percentage resolves against. */
+  min-height:0;padding:20px 28px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:var(--paper-hi);          /* the multiply backdrop */
+  border-bottom:1px solid var(--hairline);
+}
+.card__media img{
+  display:block;width:auto;height:auto;max-width:100%;max-height:100%;
+  mix-blend-mode:multiply;
+}
+.card__body{padding:20px 30px 22px;display:grid;align-content:start;gap:12px}
+.card__name{
+  margin:0;font-family:var(--display);font-weight:500;
+  font-size:25px;letter-spacing:-.022em;
+}
+.card__text{
+  margin:0;max-width:40ch;font-size:15px;line-height:1.55;color:var(--ink-2);
+  /* reserve two lines so the spec rows and CTAs stay in step across the pair */
+  min-height:3.1em;
+}
+.card__price{
+  display:flex;align-items:center;gap:16px;
+  margin:7px 0 0;padding:14px 0 0;border-top:1px solid var(--hairline);
+}
+.card__price-k{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.card__price-v{
+  margin-right:auto;font-family:var(--display);font-weight:500;
+  font-size:24px;letter-spacing:-.02em;color:var(--ink);
+}
+.card__add{
+  flex:none;display:grid;place-items:center;width:40px;height:40px;
+  padding:0;border:1px solid var(--hairline);background:transparent;
+  border-radius:13px;corner-shape:squircle;color:var(--ink-2);cursor:pointer;
+  transition:background-color .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease);
+}
+.card__add svg{width:19px;height:19px}
+.card__add:hover{background:rgba(46,61,40,.06);color:var(--ink)}
+.card__add .card__tick,.card__add.is-added svg{display:none}
+.card__add.is-added{background:var(--olive);border-color:var(--olive);color:var(--paper-hi)}
+.card__add.is-added .card__tick{display:block}
+
+
+/* the render in flight. multiply like the original, so it keeps dropping its
+   white backdrop while it crosses the page. */
+.fly{
+  position:fixed;z-index:50;pointer-events:none;
+  mix-blend-mode:multiply;object-fit:contain;
+}
+.nav__cart.is-hit{animation:cart-pop .34s var(--ease)}
+@keyframes cart-pop{
+  40%{transform:scale(1.22)}
+  to{transform:scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .nav__cart.is-hit{animation:none}
+}
+
+@media (max-width:1100px){
+  .collection{height:auto;padding:64px var(--pad) 80px}
+  .cards{grid-template-columns:1fr}
+}
+
+/* ---------- section 5 : before / after marquee ---------- */
+/* Horizontal crawl you can grab. The curved masks are the trick that stops it
+   reading as a filmstrip: they are the section's OWN background colour, cut
+   into a concave curve, so the strip appears to pass behind the page rather
+   than sit in a box. They must match --paper-hi exactly or the seam shows. */
+.marquee{
+  padding:clamp(92px,9vw,140px) 0 clamp(70px,7vw,110px);
+  background:var(--paper-hi);text-align:center;overflow:hidden;
+}
+.marquee__label{
+  margin:0 0 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.marquee__h{
+  margin:0 auto clamp(30px,3.2vw,52px);max-width:18ch;padding:0 var(--pad);
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(28px,3.6vw,56px);line-height:1.08;letter-spacing:-.03em;
+}
+.marquee__strip{position:relative;overflow:hidden}
+.marquee__mask{
+  position:absolute;left:0;right:0;z-index:10;
+  /* The reference uses 100px over 512px cards. Ours are shorter and rounded, so
+     that depth sliced them into what looked like a rendering fault. A shallow
+     curve softens the strip's edges without eating the picture. */
+  width:100%;height:clamp(32px,3.4vw,52px);pointer-events:none;
+}
+.marquee__mask path{fill:var(--paper-hi)}
+.marquee__mask--top{top:0}
+.marquee__mask--bottom{bottom:0}
+
+.marquee__track{
+  list-style:none;margin:0;padding:18px 0;
+  display:flex;width:max-content;gap:clamp(12px,1.4vw,22px);
+  cursor:grab;user-select:none;-webkit-user-select:none;
+  will-change:transform;touch-action:pan-y;
+}
+.marquee__track.is-grabbing{cursor:grabbing}
+.mslide{
+  position:relative;flex:none;
+  width:clamp(210px,19vw,310px);aspect-ratio:5/8;
+  border-radius:20px;corner-shape:squircle;overflow:hidden;
+  background:var(--paper);border:1px solid var(--hairline);
+}
+.mslide img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.mslide__tag{
+  /* must clear the mask's deepest point, or the tag is simply invisible */
+  position:absolute;top:clamp(44px,4.6vw,68px);left:12px;z-index:2;
+  padding:5px 10px;border-radius:999px;
+  background:rgba(239,240,232,.9);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--olive);
+}
+/* Filled with the site olive rather than left as a dashed slot, so the strip
+   previews the weight and rhythm a real photo will have. The caption is the
+   only thing still saying "placeholder". */
+.mslide--empty{
+  display:grid;align-content:end;border-color:transparent;background:var(--olive);
+  /* bottom padding must clear the bottom mask's deepest point, exactly as the
+     tag clears the top one — otherwise the caption is sliced in half */
+  padding:26px 26px clamp(62px,5.8vw,86px);
+}
+.mslide__cap{
+  font-family:var(--display);font-weight:400;
+  font-size:19px;line-height:1.25;letter-spacing:-.018em;
+  color:var(--paper-hi);
+}
+.marquee__hint{
+  margin:clamp(24px,2.6vw,38px) 0 0;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+
+@media (max-width:680px){
+  .mslide{width:62vw}
+}
+
+/* ---------- section 6 : the app ---------- */
+/* One frame, and the phone in front of the type — the same rule the hero and
+   the anatomy already follow, so this reads as the same page rather than a new
+   idea. height (not min-height) keeps the chain definite all the way down to
+   the image, which is what lets the phone size itself off the viewport. */
+.app{
+  height:100vh;min-height:620px;
+  padding:clamp(80px,8vh,110px) var(--pad) clamp(40px,5vh,64px);
+  background:var(--olive);color:var(--paper-hi);
+  display:grid;grid-template-columns:1fr minmax(0,42%);
+  gap:clamp(40px,5vw,96px);align-items:center;
+  position:relative;overflow:hidden;
+}
+.app__copy{align-self:center;max-width:46ch;position:relative;z-index:1}
+.app__label{
+  margin:0 0 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(232,233,223,.5);
+}
+.app__h{
+  margin:0 0 18px;max-width:15ch;
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(28px,3.4vw,52px);line-height:1.08;letter-spacing:-.03em;
+}
+.app__p{margin:0 0 30px;max-width:40ch;font-size:16px;line-height:1.6;color:rgba(232,233,223,.7)}
+.app__list{list-style:none;margin:0;padding:0}
+.app__list li{
+  padding:13px 0;border-top:1px solid rgba(232,233,223,.14);
+  font-size:13.5px;line-height:1.5;color:rgba(232,233,223,.58);
+}
+.app__list span{display:block;margin-bottom:2px;font-size:15px;font-weight:500;color:var(--paper-hi)}
+
+.app__stage{position:relative;z-index:1;height:100%;min-height:0;display:grid;place-items:center}
+/* the screen appearing to light the section it sits on */
+.app__stage::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(44% 40% at 50% 48%,rgba(169,184,135,.22),transparent 72%);
+}
+/* Spans the section, not the stage: centred on the page so the phone occludes
+   its tail. Behind a 42% column it was hidden almost entirely and read as
+   noise rather than type. */
+.app__back{
+  position:absolute;left:50%;bottom:clamp(14px,3vh,42px);
+  transform:translateX(-50%);z-index:0;
+  margin:0;white-space:nowrap;pointer-events:none;
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(58px,8.6vw,158px);line-height:.84;letter-spacing:-.05em;
+  color:rgba(232,233,223,.11);
+}
+.app__phone{
+  position:relative;z-index:1;height:100%;min-height:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.app__phone img{
+  display:block;width:auto;height:auto;max-width:100%;max-height:100%;
+  filter:drop-shadow(0 34px 60px rgba(10,16,8,.52));
+  transform:translateY(28px);opacity:0;
+  transition:transform .9s var(--ease),opacity .7s var(--ease);
+}
+.app.is-in .app__phone img{transform:none;opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .app__phone img{transform:none;opacity:1;transition:none}
+}
+
+/* ---------- section 7 : beta testers ---------- */
+.voices{padding:clamp(92px,9vw,140px) var(--pad);background:var(--paper-hi);text-align:center}
+.voices__label{
+  margin:0 0 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.voices__h{
+  margin:0 0 clamp(36px,4vw,60px);
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(26px,3vw,44px);line-height:1.1;letter-spacing:-.028em;
+}
+.voices__grid{
+  list-style:none;margin:0;padding:0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2vw,32px);
+}
+/* placeholder until a real tester is actually quoted */
+.voicecard{
+  display:grid;align-content:space-between;gap:30px;min-height:230px;
+  padding:28px;text-align:left;
+  background:var(--paper);border:1px dashed rgba(46,61,40,.24);
+  border-radius:22px;corner-shape:squircle;
+}
+.voicecard__q{
+  margin:0;font-family:var(--display);font-weight:400;
+  font-size:19px;line-height:1.35;letter-spacing:-.018em;color:var(--ink-3);
+}
+.voicecard__who{margin:0;font-size:13px;line-height:1.5;color:var(--ink-3)}
+.voicecard__who span{display:block;font-weight:500;color:var(--ink-2)}
+
+/* ---------- section 8 : support ---------- */
+.support{
+  padding:clamp(92px,9vw,140px) var(--pad) clamp(100px,10vw,150px);background:var(--paper);
+  display:grid;grid-template-columns:1fr minmax(0,38%);
+  gap:clamp(44px,5vw,100px);align-items:center;
+}
+.support__label{
+  margin:0 0 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.support__h{
+  margin:0 0 clamp(32px,3.6vw,54px);max-width:16ch;
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(28px,3.6vw,56px);line-height:1.08;letter-spacing:-.03em;
+}
+.support__topics{list-style:none;margin:0;padding:0;max-width:46ch}
+.support__topics li{
+  padding:17px 0;border-top:1px solid var(--hairline);
+  font-size:14px;line-height:1.55;color:var(--ink-3);
+}
+.support__topics span{display:block;margin-bottom:4px;font-size:16px;font-weight:500;color:var(--ink)}
+
+/* the hanging sheet */
+.sheet{
+  position:relative;width:100%;max-width:400px;aspect-ratio:5/6;
+  margin-inline:auto;touch-action:pan-y;
+}
+.sheet__cloth{
+  position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;
+  /* drop-shadow follows the canvas's alpha silhouette, so the shadow bends with
+     the cloth for free — a per-quad canvas shadow would cost a second pass */
+  filter:drop-shadow(-9px 20px 24px rgba(46,61,40,.22));
+}
+.sheet.is-held .sheet__cloth{cursor:grabbing}
+/* the printed text, kept in the DOM for find-in-page, selection and readers */
+.sheet__alt{
+  position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .sheet__cloth{cursor:default}
+}
+
+/* ---------- the reveal footer ---------- */
+/* main must be opaque and above the footer, or there is nothing to reveal. */
+main{position:relative;z-index:1;background:var(--paper)}
+.revealwrap{position:relative;clip-path:inset(0)}   /* containing block for the fixed footer */
+.footer{
+  position:fixed;bottom:0;left:0;width:100%;z-index:0;
+  padding:clamp(22px,2.4vw,34px) var(--pad) 26px;
+  background:var(--olive);color:var(--paper-hi);
+}
+.footer__top{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1.5fr) auto minmax(0,.95fr);
+  gap:clamp(26px,3vw,60px);align-items:start;
+  padding-bottom:clamp(20px,2.2vw,34px);
+}
+.footer__mark{
+  margin:0 0 14px;font-family:var(--display);font-weight:600;
+  font-size:21px;letter-spacing:-.02em;
+}
+.footer__tag{margin:0;max-width:30ch;font-size:13.5px;line-height:1.6;color:rgba(232,233,223,.6)}
+.footer__cols{display:grid;grid-template-columns:repeat(3,minmax(96px,1fr));gap:clamp(20px,2.4vw,46px)}
+.footer__h{
+  margin:0 0 14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(232,233,223,.45);
+}
+.footer__cols a{
+  display:block;padding:5px 0;font-size:14px;color:rgba(232,233,223,.76);
+  transition:color .18s var(--ease);
+}
+.footer__cols a:hover{color:var(--paper-hi)}
+.footer__line{margin:0;padding:5px 0;font-size:14px;color:rgba(232,233,223,.6)}
+.footer__line.is-pending{color:rgba(232,233,223,.42);font-style:italic}
+
+/* The device, tilted like a card on a desk, and big enough to lean over the
+   contact column. Negative margins so it overlaps rather than widening the
+   grid, and vh in the clamp so a tall phone never outgrows a short footer —
+   anything past the footer's own box is cut by .revealwrap's clip-path. */
+.footer__shot{
+  position:relative;z-index:1;align-self:center;
+  /* tall enough to own the whole row and reach the footer's top edge. It
+     cannot overhang ABOVE that edge: .revealwrap's clip-path makes the wrapper
+     the containing block for the fixed footer, so the wrapper box is also the
+     clip — anything past it is cut, not overhung. */
+  height:clamp(300px,46vh,560px);
+  /* the pair of margins is what positions it: less pull left, more pull right
+     slides it toward the app column without resizing its grid track */
+  margin-left:clamp(-210px,-12.7vw,-95px);
+  margin-right:clamp(-150px,-8.3vw,-40px);
+  transform:rotate(-7deg);
+  filter:drop-shadow(-16px 24px 40px rgba(10,16,8,.46));
+  pointer-events:none;
+}
+.footer__shot img{display:block;height:100%;width:auto}
+
+.footer__h2{
+  margin:0 0 12px;font-family:var(--display);font-weight:500;
+  font-size:21px;letter-spacing:-.02em;
+}
+.stores{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px}
+/* not links: there is no app to download yet, and a dead store button is worse
+   than an honest "coming soon" */
+.storebtn{
+  display:inline-flex;align-items:center;gap:11px;
+  padding:9px 16px 9px 13px;border-radius:14px;corner-shape:squircle;
+  border:1px solid rgba(232,233,223,.26);color:rgba(232,233,223,.82);
+  width:max-content;
+}
+.storebtn svg{width:19px;height:19px;flex:none}
+.storebtn span{display:block;font-size:15px;font-weight:500;line-height:1.15}
+.storebtn small{
+  display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(232,233,223,.5);margin-bottom:2px;
+}
+.footer__base{
+  display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  padding-top:20px;border-top:1px solid rgba(232,233,223,.16);
+  font-size:13px;color:rgba(232,233,223,.5);
+}
+.footer__base p{margin:0}
+.footer__legal.is-pending{color:rgba(232,233,223,.42)}
+
+@media (max-width:1100px){
+  .app{height:auto;grid-template-columns:1fr;padding:72px var(--pad);gap:48px}
+  .app__stage{height:auto;min-height:420px}
+  .app__phone img{max-height:60vh}
+  .voices{padding:72px var(--pad)}
+  .voices__grid{grid-template-columns:1fr}
+  .support{padding:72px var(--pad);grid-template-columns:1fr;gap:56px}
+  .footer__top{grid-template-columns:1fr;gap:38px}
+  .footer__shot{display:none}   /* the app column keeps the message; the prop does not */
+  .footer__cols{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ---------- product tabs ----------
+   Switching lands on the new product's first section, so nobody meets a
+   product mid-teardown without having read its pitch. The scroll jump is
+   instant and hidden behind the outgoing panel while it is still opaque — an
+   animated scroll would drive the incoming stage's phases backwards and play
+   the teardown in reverse.
+   The outgoing panel is pinned as a one-viewport snapshot for the length of
+   the cross-fade. That pin is load-bearing twice over: without it two 240vh
+   panels sit in flow at once and the document doubles in height, AND the
+   outgoing panel would be dragged along by the jump instead of covering it.
+   Motion lives on .stage__sticky, not .panel — it is the only part on screen,
+   and it is 100vh instead of 240vh, so the blur composites a third of the area.
+   ponytail: [hidden] still does the hiding; the classes only drive the motion. */
+.panel[hidden]{display:none}
+.panel.is-leaving{
+  position:fixed;top:0;left:0;width:100%;height:100vh;
+  overflow:hidden;z-index:5;pointer-events:none;
+}
+.panel.is-leaving .stage__sticky{animation:panel-out .28s var(--ease) both}
+.panel:not([hidden]):not(.is-leaving) .stage__sticky{animation:panel-in .46s var(--ease) both}
+/* the recede is what reads as expensive: the outgoing product pulls back and
+   softens rather than just switching off */
+@keyframes panel-out{
+  from{opacity:1;transform:none;filter:blur(0)}
+  to{opacity:0;transform:scale(.96);filter:blur(8px)}
+}
+@keyframes panel-in{
+  from{opacity:0;transform:scale(1.04);filter:blur(6px)}
+  60%{opacity:1}
+  to{opacity:1;transform:none;filter:blur(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .panel .stage__sticky{animation:none}
+  .panel.is-leaving{display:none}
+}
+/* background:transparent is the point of this rule. <button> defaults to the
+   UA's `buttonface` grey, and only .is-active set a background — so the chip
+   you were NOT on rendered as a pale box that belongs to no palette here.
+   The <a> siblings never showed it because anchors are transparent already. */
+.chip{border:0;background:transparent;font:inherit;cursor:pointer}
+
+/* The product toggle belongs to the two stage sections it actually controls.
+   Past them — on the canvas and the collection — it is gone, and it is gone
+   from tab order and the a11y tree too, not merely faded. Same while the cart
+   is open: you are looking at what you picked, not choosing a stage.
+   Both states live on <body> because the header is a PRECEDING sibling of
+   .cart and .collection, and CSS cannot select backwards. */
+.past-stages .nav__group--center,
+.cart-open .nav__group--center{
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .22s var(--ease),visibility 0s .22s;
+}
+
+/* ---------- the cart drawer ---------- */
+/* [hidden] does the hiding so the panel is out of the a11y tree and out of tab
+   order when closed; the class only drives the slide. Opening sets hidden=false
+   one frame BEFORE the class, or the transition has nothing to run from. */
+.cart{position:fixed;inset:0;z-index:60}
+.cart[hidden]{display:none}
+.cart__scrim{
+  position:absolute;inset:0;background:rgba(27,36,23,.42);
+  opacity:0;transition:opacity .34s var(--ease);
+}
+.cart.is-open .cart__scrim{opacity:1}
+.cart__panel{
+  position:absolute;top:0;right:0;height:100%;width:min(430px,100%);
+  display:flex;flex-direction:column;
+  background:var(--paper-hi);box-shadow:-26px 0 70px rgba(27,36,23,.16);
+  transform:translateX(100%);transition:transform .38s var(--ease);
+}
+.cart.is-open .cart__panel{transform:none}
+.cart__top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:26px 26px 20px;border-bottom:1px solid var(--hairline);
+}
+.cart__h{margin:0;font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.02em}
+.cart__close{
+  display:grid;place-items:center;width:36px;height:36px;padding:0;
+  border:0;background:transparent;color:var(--ink-2);cursor:pointer;
+  border-radius:12px;corner-shape:squircle;
+}
+.cart__close svg{width:19px;height:19px}
+.cart__close:hover{background:rgba(46,61,40,.06);color:var(--ink)}
+
+.cart__empty{margin:0;padding:34px 26px;font-size:14px;color:var(--ink-3)}
+.cart__items{
+  list-style:none;margin:0;padding:6px 26px;
+  flex:1;min-height:0;overflow-y:auto;
+}
+.cart__row{display:grid;grid-template-columns:62px 1fr auto;gap:16px;
+  align-items:center;padding:18px 0;border-bottom:1px solid var(--hairline)}
+.cart__thumb{
+  width:62px;height:48px;display:flex;align-items:center;justify-content:center;
+  background:var(--paper-hi);
+}
+.cart__thumb img{max-width:100%;max-height:100%;mix-blend-mode:multiply}
+.cart__name{display:block;font-size:14px;font-weight:500;margin-bottom:3px}
+.cart__line{display:block;font-size:13px;color:var(--ink-3)}
+.cart__qty{display:flex;align-items:center;gap:2px}
+.cart__step{
+  width:26px;height:26px;display:grid;place-items:center;padding:0;
+  border:1px solid var(--hairline);background:transparent;color:var(--ink-2);
+  border-radius:8px;cursor:pointer;font:inherit;font-size:14px;line-height:1;
+}
+.cart__step:hover{background:rgba(46,61,40,.06);color:var(--ink)}
+.cart__n{min-width:26px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+
+.cart__foot{padding:20px 26px 26px;border-top:1px solid var(--hairline);display:grid;gap:14px}
+.cart__total{
+  margin:0;display:flex;align-items:baseline;justify-content:space-between;
+  font-size:14px;color:var(--ink-2);
+}
+.cart__sum{font-family:var(--display);font-weight:500;font-size:24px;letter-spacing:-.02em;color:var(--ink)}
+.cart__checkout{width:100%;justify-content:center}
+
+@media (prefers-reduced-motion:reduce){
+  .cart__scrim,.cart__panel{transition:none}
 }

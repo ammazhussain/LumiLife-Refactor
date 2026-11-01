@@ -1,6 +1,7 @@
 # LumiLife — handoff
 
-Last updated 2026-11-01. Sections 1–3 are built, reviewed and pushed to `main`.
+Last updated 2026-11-01. Sections 1–8 are built, plus the cart drawer and a
+reveal footer. Several blocks ship as deliberate placeholders — see below.
 
 ## Run it
 
@@ -38,6 +39,32 @@ exploded assembly while the exploded one scales `1.085 → 1`, so the olive fram
 front holds position and only the parts fly apart. Five callouts with hairline
 leaders arrive mid-separation.
 
+**4 — The collection.** Two product cards, Glasses and Ring, at `#buy`. Every
+claim is recycled from sections 1–3; nothing new is asserted. The eight spec
+Each card shows one spec row: **Price**. Glasses EUR 320, Ring EUR 179 — real
+figures, also carried as `offers` in the Product JSON-LD. Battery / weight / box
+contents were cut on request; there is no primary button, the cart icon beside
+the price is the only CTA.
+
+The cart is **in-memory only** (`js/site.js`, last IIFE). The icon carries
+`data-add-to-cart="<name>"`; the handler bumps a counter, writes `data-count` on
+`.nav__cart` (the badge renders it via `content:attr(...)`), updates the
+`aria-label`, and flies a clone of the card render into the cart with
+`element.animate()` — no library. The clone keeps `mix-blend-mode:multiply` so
+it still drops its white backdrop in flight. The count is incremented on click,
+not on landing, so an interrupted flight cannot lose it. Nothing persists and
+there is no backend — `#cart` is still a dead anchor. `.card__media` paints its own background for the
+same `multiply` reason `.stage__sticky` does.
+
+**5 — Before / After.** `#shift`. Two cards: "before" on flat paper, "after" on
+olive — the contrast is carried by the surfaces, not by adjectives in the copy.
+The two images are **placeholders** cut from `lifestyle-slide-6.webp` and still
+carry that comp's baked-in captions and logo. All the section's own words are
+real HTML, so swapping in clean photography changes nothing else.
+
+The About section was built and then removed on request; its nav slot now points
+at `#shift`.
+
 **3 — The canvas.** Deep Olive, full screen, chrome removed exactly as the
 wireframe asked: no nav, no cart, no product toggle. States the idea behind the
 motto, with six everyday asks beside it, and the three trust facts on a rule
@@ -68,9 +95,115 @@ Scroll phases live in `js/site.js` as three ranges over one `p` value: parts
 overlap on purpose — pull them apart and a dead beat opens up in the middle
 where the screen is just a product on empty paper.
 
-Callout anchors are inline `--x` / `--y` percentages of the product box, with
-`--lift` setting the leader length. They are routed into the empty margins
-because the render itself has no readable space in the middle.
+Callout anchors are inline `--xf` / `--yf` — the dot's position on the render as
+a bare fraction — plus `--ty`, the label's own slot in the gutter. Decoupling
+those two is the whole mechanism: labels get an even rhythm down the side and
+the leader elbows out to meet the part, so no label has to sit where its part
+happens to be. **`--ty` must stay <= `--yf`** (label at or above its part) or the
+elbow inverts; there is no flipped variant.
+
+The leader is ONE bordered box, not two hairlines meeting at a corner. Its
+border-top is the horizontal run and its border-left/right the drop, so the
+corner is a real rounded join. Two separate elements drift apart by exactly the
+dot's radius at every corner — that bug shipped once already.
+
+## Verify your own work — there is a headless browser
+
+```bash
+node ~/.claude/skills/browser-automation/browser.mjs http://localhost:8777/   --eval "..."  --script ./probe.mjs  --screenshot out.png
+```
+
+Use it. Several defects in this page were invisible to reasoning and obvious in
+one measurement:
+
+- the Ring card render at **692px tall inside a 240px box** (`display:grid` gives
+  the media an auto-sized implicit row, so `max-height:100%` resolves against the
+  image's own height — circular, no constraint. flex has a definite height, so
+  the percentage resolves)
+- the seal's `grid-row:1/-1` with an auto column inventing a second grid column
+  and throwing the whole section sideways
+- `.canvas__h` stranding a one-word last line at 1850 but not at 1600
+
+Measure line breaks with Range rects per character, not `height / line-height` —
+padding makes the arithmetic lie.
+
+## `height` vs `min-height` — this bit twice
+
+Section 4 must fit one viewport, so `.collection` is `height:100vh`, NOT
+`min-height`. A percentage (`max-height:100%`) resolves only against a
+**definite** height, and `fr` only distributes real free space. With
+`min-height` the whole chain stays indefinite, the card media falls back to the
+image's natural size, and the 1135x1100 ring render drags both cards to 1440px.
+
+The chain has to stay definite the whole way down:
+`.collection{height:100vh}` -> `grid-template-rows:auto minmax(0,1fr)` ->
+`.cards{min-height:0}` -> `.card{grid-template-rows:minmax(120px,1fr) auto}` ->
+`.card__media{min-height:0}`. Break any link and the ring balloons again.
+`min-height:660px` on the section is the floor below which we stop trying.
+
+The `120px` floor on the media track is load-bearing too: with `minmax(0,1fr)`
+the body ate everything and the render measured 0x0 at a 720px viewport.
+
+## Two typographic traps in this file
+
+**`ch` resolves against the element's OWN font-size — put the measure on the
+heading, never on its wrapper.** `max-width:26ch` on a 16px `<div>` wrapping a
+56px `<h2>` is ~300px, not ~1000px, and the heading shatters into four lines.
+This has bitten twice now.
+
+**`max-width` in `ch` scales with `font-size`.** Shrinking the type to fix a bad
+wrap changes nothing, because the measure shrinks by the same factor and the
+line breaks land identically. Move both or neither.
+
+**`text-wrap: balance` does not cross a `<br>`.** It was tried on `.canvas__h`
+and measured to change nothing at 1440/1600/1850. The last two words of each
+sentence are bound with `&nbsp;` instead, which is what actually holds.
+
+## The support cloth (`#support`)
+
+A pinned sheet you can grab and tug: Verlet points on a 2D canvas, no WebGL.
+The green/sage print is an **offscreen canvas texture-mapped per triangle** with
+an affine transform, so the type creases with the cloth. ~240 triangles, 61fps.
+
+Three things are load-bearing and were each found by looking, not reasoning:
+- The triangle **clip** is expanded ~1px about its centroid. Clipped edges
+  antialias to a sub-pixel gap and the mesh otherwise shows as a grid of seams.
+- **Shear diagonals, 2-apart bend links and pin tethers** (104% of rest
+  distance). With structural links alone one hard yank folds the grid flat and
+  it never recovers.
+- `document.fonts.ready` repaints the print. Without it the motto prints in the
+  serif fallback, because canvas text does not re-render when a webfont lands.
+
+Painted text is invisible to find-in-page, selection and screen readers, so the
+canvas carries `role="img"` plus a visually-hidden `.sheet__alt` copy. Keep both
+in step if the motto changes.
+
+## The reveal footer
+
+`main` is opaque (`background: var(--paper)`) and `z-index: 1`; the footer is
+`position: fixed; bottom: 0; z-index: 0` inside `.revealwrap`, which carries
+`clip-path: inset(0)`. That clip-path is the whole trick: it makes the wrapper a
+containing block for the fixed footer, so the effect is scoped to the end of the
+page with **no scroll listener at all**.
+
+The one thing CSS cannot do is measure the footer, and the wrapper must be
+exactly as tall as it or the page over- or under-scrolls. `js/site.js` sets it,
+and re-sets on resize, on `ResizeObserver`, and after `document.fonts.ready` —
+webfonts landing late is what silently breaks this.
+
+If `main` ever loses its background, there is nothing to reveal and the footer
+just shows through the page.
+
+## The product toggle is scoped by JS
+
+`.nav__group--center` only belongs to the two stage panels it controls. An
+IntersectionObserver over `main > section` puts `.past-stages` on `<body>`, and
+the toggle goes `visibility:hidden` — out of tab order, not merely faded. **Any
+new section added to `<main>` is covered automatically** by that selector; it
+was `.canvas, .collection` first and the About section immediately escaped it.
+
+The class lives on `<body>` because the header is a *preceding* sibling of every
+section, and CSS cannot select backwards.
 
 ## Open decisions for next session
 
@@ -89,14 +222,37 @@ because the render itself has no readable space in the middle.
    *"Speaker — aimed at your ear, not at the room"* and *"Lumi processor — runs
    on the glasses, not in a data centre."*
 
-4. **Specs were deliberately left out.** Weight, battery life, hinge rating,
-   price. Invented numbers were removed rather than guessed. Real figures will
-   strengthen the anatomy section considerably — drop them in and they go
-   straight into the callouts and the Product JSON-LD.
+4. **Prices are now real** (Glasses EUR 320, Ring EUR 179) and are in the
+   Product JSON-LD as `offers`. Weight, battery life and hinge rating are still
+   unknown and were cut from the cards rather than guessed. If real figures
+   arrive they belong in the anatomy callouts.
 
 5. **Still to come for search and answer engines.** Organization, WebSite and
-   Product (Glasses) JSON-LD are in. Still missing: the Ring as a second
-   Product, and the FAQ block with FAQPage markup.
+   both Products (with `offers`) are in. Still missing: the FAQ block with
+   FAQPage markup.
+
+6. **Placeholders that must not ship as-is:**
+   - all 8 marquee slides (`#lifestyle`) — flat olive, awaiting real comps
+   - all 3 beta-tester quotes (`#testers`) — **no real tester has been quoted**
+   - the phone number, masked as `+49 30 ****` on the cloth and in the footer:
+     a plausible-looking number is somebody's real number
+   - the footer's App Store / Google Play buttons. These are **trademarked
+     artwork** with mandated clear space and sizing — fetch the official badges
+     from Apple's and Google's marketing resources, do not redraw them. They
+     currently render as non-interactive "Coming soon" pills, which is also
+     true: there is no app to download.
+   - the footer's legal links
+   - **no social links exist** — the handles were never supplied
+   `SQA/glasses-product.mp4` (9.9 MB) and `ring-product.mp4` (12 MB) are still
+   unused — too heavy to autoplay as-is, they need poster frames and
+   compression first.
+
+7. **Support copy is topics only, never policy.** Warranty terms, return windows
+   and repair pricing are not known. Do not write them from memory.
+
+8. **Checkout is inert.** The cart drawer works end to end but the Checkout
+   button does nothing — no payment backend. Decide: Stripe Checkout, a
+   Kickstarter link like the live site uses, or email capture.
 
 ## Assets
 
