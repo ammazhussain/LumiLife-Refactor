@@ -836,10 +836,11 @@ main{position:relative;z-index:1;background:var(--paper)}
   height:clamp(300px,46vh,560px);
   /* the pair of margins is what positions it: less pull left, more pull right
      slides it toward the app column without resizing its grid track */
-  /* positioned by the margin pair, measured: clears the contact column and
-     covers the left half of the app column, leaving its store buttons readable */
-  margin-left:clamp(0px,.55vw,16px);
-  margin-right:clamp(-420px,-21.55vw,-180px);
+  /* centred on the gap between the contact and app columns, so it leans on
+     both rather than burying either. Positioned by the margin pair, which
+     overlaps without resizing the grid track. */
+  margin-left:clamp(-130px,-6.32vw,-55px);
+  margin-right:clamp(-290px,-14.68vw,-120px);
   transform:rotate(-7deg);
   filter:drop-shadow(-16px 24px 40px rgba(10,16,8,.46));
   pointer-events:none;
