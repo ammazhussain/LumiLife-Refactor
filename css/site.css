@@ -1,4 +1,4 @@
-/* LumiLife — sections 1 & 2 */
+/* LumiLife â€” sections 1 & 2 */
 
 @font-face{font-family:"Clash Display";src:url("../assets/fonts/ClashDisplay-Variable.woff2") format("woff2");font-weight:200 700;font-display:swap}
 @font-face{font-family:"Satoshi";src:url("../assets/fonts/Satoshi-Variable.woff2") format("woff2");font-weight:300 900;font-display:swap}
@@ -8,7 +8,7 @@
   --paper-hi:#EFF0E8;
   --sage:#A9B887;
   --olive:#2E3D28;
-  /* Sun yellow is NOT a fourth scheme colour — it is the signal. Yellow is the
+  /* Sun yellow is NOT a fourth scheme colour â€” it is the signal. Yellow is the
      first thing the eye lands on, so it is spent on one indicator per stage and
      nowhere else. If it starts appearing twice on a screen it has stopped
      working. ponytail: a token with the rule written on it. */
@@ -18,6 +18,13 @@
   --ink-2:rgba(46,61,40,.68);
   --ink-3:rgba(46,61,40,.46);
   --hairline:rgba(46,61,40,.14);
+
+  /* the olive sections had eleven alphas of paper-hi doing the work of three.
+     These mirror --ink-2 / --ink-3 so both halves of the page read the same. */
+  --on-olive:var(--paper-hi);
+  --on-olive-2:rgba(232,233,223,0.68);
+  --on-olive-3:rgba(232,233,223,0.46);
+  --on-olive-line:rgba(232,233,223,0.16);
 
   --display:"Clash Display",Georgia,serif;
   --text:"Satoshi",-apple-system,"Segoe UI",sans-serif;
@@ -47,7 +54,7 @@ html{scroll-behavior:smooth}
 /* clip, NOT hidden: the panel entry animation scales .stage__sticky from 1.04,
    and that element is already 100vw, so it overhangs for the length of the
    animation and flashes a horizontal scrollbar on load. overflow-x:hidden
-   would fix it by making the root a scroll container — which breaks every
+   would fix it by making the root a scroll container â€” which breaks every
    position:sticky stage on the page. clip does not. */
 html{overflow-x:clip}
 body{
@@ -76,16 +83,16 @@ ul{margin:0;padding:0;list-style:none}
   background:rgba(239,240,232,.72);
   -webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);
   border:1px solid var(--hairline);
-  border-radius:18px;corner-shape:squircle;
+  border-radius:16px;corner-shape:squircle;
   box-shadow:0 1px 2px rgba(46,61,40,.05);
 }
 .nav__brand{
-  font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.02em;
-  padding:0 14px 0 12px;
+  font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.02em;
+  padding:0 12px;
 }
 .nav__links{display:flex;gap:2px}
 .nav__links a,.chip{
-  display:flex;align-items:center;height:36px;padding:0 14px;
+  display:flex;align-items:center;height:36px;padding:0 12px;
   font-size:14px;color:var(--ink-2);
   border-radius:12px;corner-shape:squircle;
   transition:background-color .18s var(--ease),color .18s var(--ease);
@@ -94,7 +101,7 @@ ul{margin:0;padding:0;list-style:none}
 .chip.is-active{background:rgba(46,61,40,.08);color:var(--ink)}
 .nav__group--end{padding-right:6px}
 /* ponytail: absolute centring, because space-between centres it between its
-   neighbours — which drift as the brand group changes width. */
+   neighbours â€” which drift as the brand group changes width. */
 .nav__group--center{
   position:absolute;left:50%;transform:translateX(-50%);
   transition:opacity .22s var(--ease),visibility 0s;
@@ -105,7 +112,7 @@ ul{margin:0;padding:0;list-style:none}
   transition:background-color .18s var(--ease),color .18s var(--ease);
 }
 .nav__cart:hover{background:rgba(46,61,40,.06);color:var(--ink)}
-.nav__cart svg{width:19px;height:19px}
+.nav__cart svg{width:20px;height:20px}
 
 /* ---------- buttons ---------- */
 .btn{
@@ -117,14 +124,14 @@ ul{margin:0;padding:0;list-style:none}
 .btn:active{transform:scale(.985)}
 .btn--primary{background:var(--olive);color:var(--paper-hi)}
 .btn--primary:hover{background:#263320}
-.btn--lg{height:52px;padding:0 26px;font-size:15px;border-radius:16px}
-.btn--quiet{color:var(--ink-2);padding:0 4px}
+.btn--lg{height:52px;padding:0 24px;font-size:16px;border-radius:16px}
+.btn--quiet{color:var(--ink-2);padding:0}
 .btn--quiet::after{content:"";margin-left:8px;width:16px;height:1px;background:currentColor;opacity:.5}
 .btn--quiet:hover{color:var(--ink)}
 
 /* ---------- the stage ---------- */
 /* The exploded stage sizes off BOTH axes. Labels live in the two SIDE gutters
-   (plus one below), so width is what they cost now, not height — hence the
+   (plus one below), so width is what they cost now, not height â€” hence the
    render is a good deal bigger than it was.
    --gutter is the room one label column needs; --box-ar is the render's aspect. */
 .stage{
@@ -138,7 +145,7 @@ ul{margin:0;padding:0;list-style:none}
 .stage--ring{--box-ar:1;--parts-scale:1;--parts-x:0%;--parts-y:0%}
 /* The ring renders carry a vignetted studio backdrop, so normalising against a
    single median leaves a faint rectangle. Feather the edges instead of chasing
-   a perfect flat-field — ponytail: a mask is four lines, a better estimator is
+   a perfect flat-field â€” ponytail: a mask is four lines, a better estimator is
    an afternoon. */
 .stage--ring .product__img{
   -webkit-mask-image:
@@ -203,27 +210,27 @@ ul{margin:0;padding:0;list-style:none}
 .layer--hero{opacity:calc(1 - var(--p2) * 1.6)}
 .layer--anatomy{opacity:var(--p3)}
 
-/* spec micro-list — the signature detail */
+/* spec micro-list â€” the signature detail */
 .spec{
   position:absolute;top:104px;right:var(--pad);margin:0;
   display:flex;flex-direction:column;align-items:flex-end;
   text-align:right;
 }
 .spec__label{
-  margin:0 0 9px;padding-bottom:7px;
+  margin:0 0 8px;padding-bottom:8px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-3);min-width:168px;
   border-bottom:1px solid var(--hairline);
 }
 .spec__list{
   margin:0;padding:0;list-style:none;
-  display:flex;flex-direction:column;gap:7px;
+  display:flex;flex-direction:column;gap:8px;
 }
-/* presence comes from the spacing and the rule, not from weight —
+/* presence comes from the spacing and the rule, not from weight â€”
    ponytail: colour and gap only, no font-weight anywhere in here */
 .spec__list li{
-  font-size:12.5px;line-height:1.25;color:var(--ink-2);
-  padding-right:13px;position:relative;
+  font-size:12px;line-height:1.3;color:var(--ink-2);
+  padding-right:12px;position:relative;
 }
 .spec__list li::after{
   content:"";position:absolute;right:0;top:.56em;
@@ -231,22 +238,22 @@ ul{margin:0;padding:0;list-style:none}
 }
 
 /* bottom-left copy block */
-.lead{position:absolute;left:var(--pad);bottom:var(--pad);max-width:430px}
-.lead__eyebrow,.lead__h{margin:0 0 14px}
+.lead{position:absolute;left:var(--pad);bottom:var(--pad);max-width:432px}
+.lead__eyebrow,.lead__h{margin:0 0 16px}
 .lead__eyebrow{
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
 }
 .lead__h{
-  font-family:var(--display);font-weight:500;font-size:34px;line-height:1.08;letter-spacing:-.025em;
+  font-family:var(--display);font-weight:500;font-size:32px;line-height:1.08;letter-spacing:-.025em;
   max-width:12ch;
 }
 .lead__text{margin:0;font-size:16px;line-height:1.55;color:var(--ink-2)}
-.actions{display:flex;align-items:center;gap:22px;margin-top:28px}
-.lead--anatomy{max-width:460px}
+.actions{display:flex;align-items:center;gap:24px;margin-top:28px}
+.lead--anatomy{max-width:464px}
 
 .scrollcue{
-  position:absolute;left:50%;bottom:30px;margin:0;transform:translateX(-50%);
-  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);
+  position:absolute;left:50%;bottom:32px;margin:0;transform:translateX(-50%);
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
 }
 .scrollcue span{display:block;padding-bottom:16px;border-bottom:1px solid var(--hairline)}
 
@@ -260,57 +267,57 @@ ul{margin:0;padding:0;list-style:none}
   /* --ty is the LABEL's slot in the column, --yf is the dot on the render.
      Decoupling them is the whole trick: labels get an even rhythm down the
      gutter and the leader elbows out to meet the dot, so no label has to sit
-     where its part happens to be — which is what pushed text over the render. */
+     where its part happens to be â€” which is what pushed text over the render. */
   --dy:calc((var(--ty,var(--yf)) - var(--yf)) * var(--stageh));
   /* THE BAND RULE: the stage splits in two. The lower band is the headline and
-     the wordmark's — no label may enter it, whatever its part is doing down
+     the wordmark's â€” no label may enter it, whatever its part is doing down
      there; that is what the elbow exists for. Keep --ty <= .52 on the glasses
      and <= .44 on the ring (its render is square, so the box is shorter and
      every slot lands lower). Collisions here are always this rule being broken,
      never a label being too wide. */
 }
 .callout__dot{
-  position:absolute;left:0;top:0;width:7px;height:7px;
+  position:absolute;left:0;top:0;width:8px;height:8px;
   border-radius:50%;background:var(--olive);
 }
 /* label: parked off the stage edge, at its own height */
 .callout__text{
-  position:absolute;width:184px;text-align:right;
+  position:absolute;width:158px;text-align:right;
   top:calc(var(--dy) - 4px);
   right:calc(var(--stagebox) * var(--xf) + 22px);
   font-size:12px;line-height:1.35;color:var(--ink-2);
 }
-.callout__text b{display:block;font-weight:500;font-size:13px;color:var(--ink);margin-bottom:3px}
+.callout__text b{display:block;font-weight:500;font-size:14px;color:var(--ink);margin-bottom:4px}
 /* The leader is ONE bordered box, not two hairlines butted together: the
    corner is then a real rounded join that cannot drift apart. Its lower/inner
    edge lands exactly on the dot's centre (3px), which is what the old
    right:0-vs-left:3px pair got wrong at every corner.
    ponytail: the base assumes --ty <= --yf (label at or above its part).
-   .callout--below flips it for a label that must sit under its own dot —
+   .callout--below flips it for a label that must sit under its own dot â€”
    Speaker needs that to line up with the right-hand column. */
 .callout::before{
   content:"";position:absolute;
   border:0 solid var(--hairline);
-  border-top-width:1px;border-right-width:1px;border-top-right-radius:9px;
-  right:-3px;top:calc(var(--dy) + 3px);
-  width:calc(var(--stagebox) * var(--xf) + 17px);
+  border-top-width:1px;border-right-width:1px;border-top-right-radius:8px;
+  right:-4px;top:calc(var(--dy) + 4px);
+  width:calc(var(--stagebox) * var(--xf) + 18px);
   height:calc(var(--dy) * -1);
 }
 .callout--key .callout__dot{background:var(--signal)}
 .callout--below::before{
-  top:3px;height:var(--dy);
+  top:4px;height:var(--dy);
   border-top-width:0;border-bottom-width:1px;
-  border-top-right-radius:0;border-bottom-right-radius:9px;
+  border-top-right-radius:0;border-bottom-right-radius:8px;
 }
 .callout--right .callout__text{
   right:auto;text-align:left;
   left:calc(var(--stagebox) * (1 - var(--xf)) + 22px);
 }
 .callout--right::before{
-  right:auto;left:3px;
-  width:calc(var(--stagebox) * (1 - var(--xf)) + 11px);
+  right:auto;left:4px;
+  width:calc(var(--stagebox) * (1 - var(--xf)) + 10px);
   border-right-width:0;border-left-width:1px;
-  border-top-right-radius:0;border-top-left-radius:9px;
+  border-top-right-radius:0;border-top-left-radius:8px;
 }
 /* ---------- squircle fallback ---------- */
 @supports not (corner-shape:squircle){
@@ -349,7 +356,7 @@ ul{margin:0;padding:0;list-style:none}
 /* dark counterpoint, and the only place the chrome goes away */
 .canvas{
   --seal-size:112px;
-  --canvas-top:96px;   /* nav's bottom edge is 76px; clear it */
+  --canvas-top:104px;  /* nav's bottom edge is 76px; clear it */
   position:relative;
   min-height:100vh;
   padding:var(--canvas-top) var(--pad) var(--pad);
@@ -363,32 +370,32 @@ ul{margin:0;padding:0;list-style:none}
 .canvas__label,.asks__label{
   margin:0;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:rgba(232,233,223,.5);
+  color:var(--on-olive-3);
 }
 .canvas__body{
   align-self:center;
-  display:grid;grid-template-columns:1fr 1fr;
+  display:grid;grid-template-columns:1fr minmax(0,42%);
   /* The right column is always the taller of the two, so the heading centres
      against it rather than hanging off the top. */
-  gap:clamp(64px,7vw,150px);align-items:center;
+  gap:clamp(40px,5vw,96px);align-items:center;
   padding-bottom:40px;
 }
 .canvas__h{
   /* max-width is in ch, so it scales with font-size and the line breaks hold
-     as the type grows — until the column clamps the box. "Ambient means it
+     as the type grows â€” until the column clamps the box. "Ambient means it
      waits." needs ~12.9em; at 54px the clamped box is ~14.1em, so it still
      fits. Past ~59px it does not, and "waits." drops to its own line again. */
   margin:0;max-width:20ch;align-self:center;
   font-family:var(--display);font-weight:400;
-  font-size:clamp(30px,3.4vw,54px);line-height:1.12;letter-spacing:-.028em;
+  font-size:clamp(32px,3.6vw,56px);line-height:1.12;letter-spacing:-.028em;
 }
 
 /* ---------- the rotating trust seal ---------- */
 /* GLUED TO THE SECTION, not to the viewport. position:fixed held its screen
-   coordinate correctly — and that was the bug: the section slid underneath it
+   coordinate correctly â€” and that was the bug: the section slid underneath it
    and the seal ended up sitting on the list. Absolute inside .canvas means it
    travels with the section and leaves with it, so it can never overlap.
-   Out of flow either way, so it takes no part in grid placement — which is what
+   Out of flow either way, so it takes no part in grid placement â€” which is what
    once made the grid invent a second column and throw the body sideways.
    ponytail: SVG textPath, not 57 absolutely-positioned characters. The circle
    is a path, the browser does the trigonometry. */
@@ -407,7 +414,7 @@ ul{margin:0;padding:0;list-style:none}
      any mono fallback with a wider advance. Shrink the circle again and this
      is the number that comes down with it. */
   font-family:var(--mono);font-size:9px;letter-spacing:.08em;
-  fill:rgba(232,233,223,.62);
+  fill:var(--on-olive-3);
 }
 .seal__dot{width:6px;height:6px;border-radius:50%;background:var(--signal)}
 @keyframes seal-turn{to{transform:rotate(360deg)}}
@@ -415,37 +422,37 @@ ul{margin:0;padding:0;list-style:none}
   .seal__ring{animation:none}
 }
 
-.asks{padding-top:84px}  /* clears the seal in the corner */
+.asks{padding-top:88px}  /* clears the seal in the corner */
 .asks__list{margin:20px 0 0;display:grid;gap:0}
 .asks__list li{
-  padding:15px 0;
-  font-size:17px;line-height:1.3;color:rgba(232,233,223,.8);
-  border-top:1px solid rgba(232,233,223,.14);
+  padding:16px 0;
+  font-size:16px;line-height:1.4;color:var(--on-olive-2);
+  border-top:1px solid var(--on-olive-line);
 }
 .asks__list li:first-child{border-top:0;padding-top:0}
 .asks__note{
-  margin:22px 0 0;font-size:13px;line-height:1.5;color:rgba(232,233,223,.5);
+  margin:24px 0 0;font-size:12px;line-height:1.5;color:var(--on-olive-3);
 }
 
 .trust{
   display:grid;grid-template-columns:repeat(4,1fr);gap:40px;
-  padding-top:28px;border-top:1px solid rgba(232,233,223,.18);
+  padding-top:28px;border-top:1px solid var(--on-olive-line);
 }
-/* mark, hairline, name — all on one line, paragraph beneath */
-.trust__head{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+/* mark, hairline, name â€” all on one line, paragraph beneath */
+.trust__head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .trust__icon{
   flex:none;display:block;width:20px;height:20px;
   color:var(--sage);fill:none;stroke:currentColor;
-  stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;
+  stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;
 }
 .trust__k{
   display:flex;align-items:center;min-height:28px;
-  padding-left:13px;border-left:1px solid rgba(232,233,223,.26);
+  padding-left:12px;border-left:1px solid var(--on-olive-line);
   font-size:14px;font-weight:500;color:var(--paper-hi);
 }
 .trust__v{
   display:block;max-width:38ch;
-  font-size:13px;line-height:1.55;color:rgba(232,233,223,.6);
+  font-size:14px;line-height:1.55;color:var(--on-olive-2);
 }
 
 /* chrome steps aside while the canvas is on screen */
@@ -464,7 +471,7 @@ ul{margin:0;padding:0;list-style:none}
 /* ---------- section 4 : the collection ---------- */
 /* Back on paper after the olive canvas. The renders are normalised-to-white and
    composited with multiply, so every surface they sit on has to paint its own
-   background in the same stacking context — .card__media does, for exactly the
+   background in the same stacking context â€” .card__media does, for exactly the
    reason HANDOFF.md gives for .stage__sticky. Drop that line and the renders
    become white rectangles. */
 .collection{
@@ -479,12 +486,12 @@ ul{margin:0;padding:0;list-style:none}
      floor below which we give up and let it scroll. */
   height:100vh;min-height:660px;
   display:grid;grid-template-rows:auto minmax(0,1fr);
-  padding:96px var(--pad) 40px;
+  padding:104px var(--pad) 40px;
   background:linear-gradient(to bottom,var(--paper-hi),var(--paper) 42%);
 }
 .collection__top{max-width:30ch;margin-bottom:28px}
 .collection__label{
-  margin:0 0 12px;
+  margin:0 0 16px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-3);
 }
@@ -495,21 +502,21 @@ ul{margin:0;padding:0;list-style:none}
 }
 .cards{
   list-style:none;margin:0;padding:0;
-  display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,3vw,56px);
+  display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(28px,3vw,56px);
   min-height:0;   /* let the row shrink, or the track floors at max-content */
 }
 .card{
   display:grid;grid-template-rows:minmax(120px,1fr) auto;min-height:0;
   background:var(--paper-hi);
   border:1px solid var(--hairline);
-  border-radius:26px;corner-shape:squircle;overflow:hidden;
+  border-radius:24px;corner-shape:squircle;overflow:hidden;
 }
 .card__media{
   /* A fixed height, not an aspect ratio: the two renders are 3.1:1 and 1.03:1,
      so a ratio-sized box lets the square ring balloon to the card's full width
      while the glasses sit tiny. A height cap contains both to the same band. */
   /* flex, not grid: in a grid the implicit row is auto-sized, so the image's
-     own height defines the track and max-height:100% resolves against itself —
+     own height defines the track and max-height:100% resolves against itself â€”
      the square ring render blew out to 692px inside a 240px box. A flex
      container's definite height is what the percentage resolves against. */
   min-height:0;padding:20px 28px;
@@ -521,35 +528,35 @@ ul{margin:0;padding:0;list-style:none}
   display:block;width:auto;height:auto;max-width:100%;max-height:100%;
   mix-blend-mode:multiply;
 }
-.card__body{padding:20px 30px 22px;display:grid;align-content:start;gap:12px}
+.card__body{padding:20px 28px 24px;display:grid;align-content:start;gap:12px}
 .card__name{
   margin:0;font-family:var(--display);font-weight:500;
-  font-size:25px;letter-spacing:-.022em;
+  font-size:24px;letter-spacing:-.022em;
 }
 .card__text{
-  margin:0;max-width:40ch;font-size:15px;line-height:1.55;color:var(--ink-2);
+  margin:0;max-width:40ch;font-size:16px;line-height:1.55;color:var(--ink-2);
   /* reserve two lines so the spec rows and CTAs stay in step across the pair */
   min-height:3.1em;
 }
 .card__price{
   display:flex;align-items:center;gap:16px;
-  margin:7px 0 0;padding:14px 0 0;border-top:1px solid var(--hairline);
+  margin:8px 0 0;padding:16px 0 0;border-top:1px solid var(--hairline);
 }
 .card__price-k{
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-3);
 }
 .card__price-v{
-  margin-right:auto;font-family:var(--display);font-weight:500;
+  margin-right:auto;font-family:var(--display);font-weight:500;font-variant-numeric:tabular-nums;
   font-size:24px;letter-spacing:-.02em;color:var(--ink);
 }
 .card__add{
   flex:none;display:grid;place-items:center;width:40px;height:40px;
   padding:0;border:1px solid var(--hairline);background:transparent;
-  border-radius:13px;corner-shape:squircle;color:var(--ink-2);cursor:pointer;
+  border-radius:12px;corner-shape:squircle;color:var(--ink-2);cursor:pointer;
   transition:background-color .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease);
 }
-.card__add svg{width:19px;height:19px}
+.card__add svg{width:20px;height:20px}
 /* the glyph alone turns signal-yellow on hover/focus; a small scale carries
    the attention that the colour cannot at this contrast against pale paper */
 .card__add:hover,.card__add:focus-visible{
@@ -592,7 +599,7 @@ ul{margin:0;padding:0;list-style:none}
   background:var(--paper-hi);text-align:center;overflow:hidden;
 }
 .marquee__label{
-  margin:0 0 14px;
+  margin:0 0 16px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-3);
 }
@@ -614,7 +621,7 @@ ul{margin:0;padding:0;list-style:none}
 .marquee__mask--bottom{bottom:0}
 
 .marquee__track{
-  list-style:none;margin:0;padding:18px 0;
+  list-style:none;margin:0;padding:16px 0;
   display:flex;width:max-content;gap:clamp(12px,1.4vw,22px);
   cursor:grab;user-select:none;-webkit-user-select:none;
   will-change:transform;touch-action:pan-y;
@@ -630,10 +637,10 @@ ul{margin:0;padding:0;list-style:none}
 .mslide__tag{
   /* must clear the mask's deepest point, or the tag is simply invisible */
   position:absolute;top:clamp(44px,4.6vw,68px);left:12px;z-index:2;
-  padding:5px 10px;border-radius:999px;
+  padding:4px 10px;border-radius:10px;
   background:rgba(239,240,232,.9);
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--olive);
 }
 /* Filled with the site olive rather than left as a dashed slot, so the strip
@@ -642,12 +649,12 @@ ul{margin:0;padding:0;list-style:none}
 .mslide--empty{
   display:grid;align-content:end;border-color:transparent;background:var(--olive);
   /* bottom padding must clear the bottom mask's deepest point, exactly as the
-     tag clears the top one — otherwise the caption is sliced in half */
-  padding:26px 26px clamp(62px,5.8vw,86px);
+     tag clears the top one â€” otherwise the caption is sliced in half */
+  padding:24px 24px clamp(64px,5.8vw,88px);
 }
 .mslide__cap{
   font-family:var(--display);font-weight:400;
-  font-size:19px;line-height:1.25;letter-spacing:-.018em;
+  font-size:20px;line-height:1.25;letter-spacing:-.018em;
   color:var(--paper-hi);
 }
 .marquee__hint{
@@ -661,13 +668,13 @@ ul{margin:0;padding:0;list-style:none}
 }
 
 /* ---------- section 6 : the app ---------- */
-/* One frame, and the phone in front of the type — the same rule the hero and
+/* One frame, and the phone in front of the type â€” the same rule the hero and
    the anatomy already follow, so this reads as the same page rather than a new
    idea. height (not min-height) keeps the chain definite all the way down to
    the image, which is what lets the phone size itself off the viewport. */
 .app{
   height:100vh;min-height:620px;
-  padding:clamp(80px,8vh,110px) var(--pad) clamp(40px,5vh,64px);
+  padding:clamp(104px,8vh,112px) var(--pad) clamp(40px,5vh,64px);
   background:var(--olive);color:var(--paper-hi);
   display:grid;grid-template-columns:1fr minmax(0,42%);
   gap:clamp(40px,5vw,96px);align-items:center;
@@ -675,28 +682,28 @@ ul{margin:0;padding:0;list-style:none}
 }
 .app__copy{align-self:center;max-width:46ch;position:relative;z-index:1}
 .app__label{
-  margin:0 0 14px;
+  margin:0 0 16px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:rgba(232,233,223,.5);
+  color:var(--on-olive-3);
 }
 .app__h{
-  margin:0 0 18px;max-width:15ch;
+  margin:0 0 16px;max-width:15ch;
   font-family:var(--display);font-weight:400;
-  font-size:clamp(28px,3.4vw,52px);line-height:1.08;letter-spacing:-.03em;
+  font-size:clamp(28px,3.6vw,56px);line-height:1.08;letter-spacing:-.03em;
 }
-.app__p{margin:0 0 30px;max-width:40ch;font-size:16px;line-height:1.6;color:rgba(232,233,223,.7)}
+.app__p{margin:0 0 32px;max-width:40ch;font-size:16px;line-height:1.6;color:var(--on-olive-2)}
 .app__list{list-style:none;margin:0;padding:0}
 .app__list li{
-  padding:13px 0;border-top:1px solid rgba(232,233,223,.14);
-  font-size:13.5px;line-height:1.5;color:rgba(232,233,223,.58);
+  padding:12px 0;border-top:1px solid var(--on-olive-line);
+  font-size:14px;line-height:1.5;color:var(--on-olive-2);
 }
-.app__list span{display:block;margin-bottom:2px;font-size:15px;font-weight:500;color:var(--paper-hi)}
+.app__list span{display:block;margin-bottom:2px;font-size:16px;font-weight:500;color:var(--paper-hi)}
 
 .app__stage{position:relative;z-index:1;height:100%;min-height:0;display:grid;place-items:center}
 /* the screen appearing to light the section it sits on */
 .app__stage::before{
   content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(44% 40% at 50% 48%,rgba(169,184,135,.22),transparent 72%);
+  background:radial-gradient(40% 36% at 50% 48%,rgba(169,184,135,.16),transparent 72%);
 }
 /* Spans the section, not the stage: centred on the page so the phone occludes
    its tail. Behind a 42% column it was hidden almost entirely and read as
@@ -725,36 +732,36 @@ ul{margin:0;padding:0;list-style:none}
 }
 
 /* ---------- section 7 : beta testers ---------- */
-.voices{padding:clamp(92px,9vw,140px) var(--pad);background:var(--paper-hi);text-align:center}
+.voices{padding:clamp(92px,9vw,140px) var(--pad) clamp(70px,7vw,110px);background:var(--paper-hi);text-align:center}
 .voices__label{
-  margin:0 0 14px;
+  margin:0 0 16px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-3);
 }
 .voices__h{
   margin:0 0 clamp(36px,4vw,60px);
   font-family:var(--display);font-weight:500;
-  font-size:clamp(26px,3vw,44px);line-height:1.1;letter-spacing:-.028em;
+  font-size:clamp(26px,2.6vw,40px);line-height:1.1;letter-spacing:-.028em;
 }
 .voices__grid{
   list-style:none;margin:0;padding:0;
   display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2vw,32px);
 }
 /* Ticket cards: a rounded rect with a semicircular bite out of each side at
-   mid-height. Two full-size radial masks, one hole each, intersected — the
+   mid-height. Two full-size radial masks, one hole each, intersected â€” the
    same mask-composite trick the ring render already uses. A border cannot be
    used here: the mask cuts the element, and a border would be cut with it and
    leave the notch outlined on three sides only. */
 .voicecard{
-  --notch:17px;
+  --notch:16px;
   display:grid;align-content:space-between;gap:24px;min-height:244px;
-  padding:26px 30px;text-align:left;
-  background:var(--paper);border-radius:22px;
+  padding:24px 28px;text-align:left;
+  background:var(--paper);border-radius:24px;
   /* The hairline is a drop-shadow with a 1px blur and no offset, not a border:
      the mask cuts the element, so a real border would be cut with it and leave
      the notch outlined on three sides. A filter is applied after the mask, so
      this traces the notches instead. One uniform shadow rather than four
-     offset ones — those double up at the corners. */
+     offset ones â€” those double up at the corners. */
   filter:
     drop-shadow(0 0 1px rgba(46,61,40,.38))
     drop-shadow(0 3px 12px rgba(46,61,40,.09));
@@ -769,172 +776,26 @@ ul{margin:0;padding:0;list-style:none}
 }
 .voicecard__label{
   margin:0;
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-3);
 }
 /* still a placeholder: no tester has been quoted */
 .voicecard__q{
   margin:0;font-family:var(--display);font-weight:400;
-  font-size:26px;line-height:1.2;letter-spacing:-.022em;color:var(--ink-2);
+  font-size:24px;line-height:1.2;letter-spacing:-.022em;color:var(--ink-2);
 }
-.voicecard__who{margin:0;font-size:13px;line-height:1.5;color:var(--ink-3)}
+.voicecard__who{margin:0;font-size:12px;line-height:1.5;color:var(--ink-3)}
 .voicecard__who span{display:block;font-weight:500;color:var(--ink)}
 
-@media (max-width:1100px){
-  .collection{height:auto;padding:64px var(--pad) 80px}
-  .cards{grid-template-columns:1fr}
-}
-
-/* ---------- section 5 : before / after marquee ---------- */
-/* Horizontal crawl you can grab. The curved masks are the trick that stops it
-   reading as a filmstrip: they are the section's OWN background colour, cut
-   into a concave curve, so the strip appears to pass behind the page rather
-   than sit in a box. They must match --paper-hi exactly or the seam shows. */
-.marquee{
-  padding:clamp(92px,9vw,140px) 0 clamp(70px,7vw,110px);
-  background:var(--paper-hi);text-align:center;overflow:hidden;
-}
-.marquee__label{
-  margin:0 0 14px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--ink-3);
-}
-.marquee__h{
-  margin:0 auto clamp(30px,3.2vw,52px);max-width:18ch;padding:0 var(--pad);
-  font-family:var(--display);font-weight:400;
-  font-size:clamp(28px,3.6vw,56px);line-height:1.08;letter-spacing:-.03em;
-}
-.marquee__strip{position:relative;overflow:hidden}
-.marquee__mask{
-  position:absolute;left:0;right:0;z-index:10;
-  /* The reference uses 100px over 512px cards. Ours are shorter and rounded, so
-     that depth sliced them into what looked like a rendering fault. A shallow
-     curve softens the strip's edges without eating the picture. */
-  width:100%;height:clamp(32px,3.4vw,52px);pointer-events:none;
-}
-.marquee__mask path{fill:var(--paper-hi)}
-.marquee__mask--top{top:0}
-.marquee__mask--bottom{bottom:0}
-
-.marquee__track{
-  list-style:none;margin:0;padding:18px 0;
-  display:flex;width:max-content;gap:clamp(12px,1.4vw,22px);
-  cursor:grab;user-select:none;-webkit-user-select:none;
-  will-change:transform;touch-action:pan-y;
-}
-.marquee__track.is-grabbing{cursor:grabbing}
-.mslide{
-  position:relative;flex:none;
-  width:clamp(210px,19vw,310px);aspect-ratio:5/8;
-  border-radius:20px;corner-shape:squircle;overflow:hidden;
-  background:var(--paper);border:1px solid var(--hairline);
-}
-.mslide img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.mslide__tag{
-  /* must clear the mask's deepest point, or the tag is simply invisible */
-  position:absolute;top:clamp(44px,4.6vw,68px);left:12px;z-index:2;
-  padding:5px 10px;border-radius:999px;
-  background:rgba(239,240,232,.9);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--olive);
-}
-/* Filled with the site olive rather than left as a dashed slot, so the strip
-   previews the weight and rhythm a real photo will have. The caption is the
-   only thing still saying "placeholder". */
-.mslide--empty{
-  display:grid;align-content:end;border-color:transparent;background:var(--olive);
-  /* bottom padding must clear the bottom mask's deepest point, exactly as the
-     tag clears the top one — otherwise the caption is sliced in half */
-  padding:26px 26px clamp(62px,5.8vw,86px);
-}
-.mslide__cap{
-  font-family:var(--display);font-weight:400;
-  font-size:19px;line-height:1.25;letter-spacing:-.018em;
-  color:var(--paper-hi);
-}
-.marquee__hint{
-  margin:clamp(24px,2.6vw,38px) 0 0;
-  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--ink-3);
-}
-
-@media (max-width:680px){
-  .mslide{width:62vw}
-}
-
-/* ---------- section 6 : the app ---------- */
-/* One frame, and the phone in front of the type — the same rule the hero and
-   the anatomy already follow, so this reads as the same page rather than a new
-   idea. height (not min-height) keeps the chain definite all the way down to
-   the image, which is what lets the phone size itself off the viewport. */
-.app{
-  height:100vh;min-height:620px;
-  padding:clamp(80px,8vh,110px) var(--pad) clamp(40px,5vh,64px);
-  background:var(--olive);color:var(--paper-hi);
-  display:grid;grid-template-columns:1fr minmax(0,42%);
-  gap:clamp(40px,5vw,96px);align-items:center;
-  position:relative;overflow:hidden;
-}
-.app__copy{align-self:center;max-width:46ch;position:relative;z-index:1}
-.app__label{
-  margin:0 0 14px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:rgba(232,233,223,.5);
-}
-.app__h{
-  margin:0 0 18px;max-width:15ch;
-  font-family:var(--display);font-weight:400;
-  font-size:clamp(28px,3.4vw,52px);line-height:1.08;letter-spacing:-.03em;
-}
-.app__p{margin:0 0 30px;max-width:40ch;font-size:16px;line-height:1.6;color:rgba(232,233,223,.7)}
-.app__list{list-style:none;margin:0;padding:0}
-.app__list li{
-  padding:13px 0;border-top:1px solid rgba(232,233,223,.14);
-  font-size:13.5px;line-height:1.5;color:rgba(232,233,223,.58);
-}
-.app__list span{display:block;margin-bottom:2px;font-size:15px;font-weight:500;color:var(--paper-hi)}
-
-.app__stage{position:relative;z-index:1;height:100%;min-height:0;display:grid;place-items:center}
-/* the screen appearing to light the section it sits on */
-.app__stage::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(44% 40% at 50% 48%,rgba(169,184,135,.22),transparent 72%);
-}
-/* Spans the section, not the stage: centred on the page so the phone occludes
-   its tail. Behind a 42% column it was hidden almost entirely and read as
-   noise rather than type. */
-.app__back{
-  position:absolute;left:50%;bottom:clamp(14px,3vh,42px);
-  transform:translateX(-50%);z-index:0;
-  margin:0;white-space:nowrap;pointer-events:none;
-  font-family:var(--display);font-weight:600;
-  font-size:clamp(58px,8.6vw,158px);line-height:.84;letter-spacing:-.05em;
-  color:rgba(232,233,223,.11);
-}
-.app__phone{
-  position:relative;z-index:1;height:100%;min-height:0;
-  display:flex;align-items:center;justify-content:center;
-}
-.app__phone img{
-  display:block;width:auto;height:auto;max-width:100%;max-height:100%;
-  filter:drop-shadow(0 34px 60px rgba(10,16,8,.52));
-  transform:translateY(28px);opacity:0;
-  transition:transform .9s var(--ease),opacity .7s var(--ease);
-}
-.app.is-in .app__phone img{transform:none;opacity:1}
-@media (prefers-reduced-motion:reduce){
-  .app__phone img{transform:none;opacity:1;transition:none}
-}
 
 /* ---------- section 8 : support ---------- */
 .support{
-  padding:clamp(92px,9vw,140px) var(--pad) clamp(100px,10vw,150px);background:var(--paper);
-  display:grid;grid-template-columns:1fr minmax(0,38%);
-  gap:clamp(44px,5vw,100px);align-items:center;
+  padding:clamp(92px,9vw,140px) var(--pad) clamp(70px,7vw,110px);background:var(--paper);
+  display:grid;grid-template-columns:1fr minmax(0,42%);
+  gap:clamp(40px,5vw,96px);align-items:center;
 }
 .support__label{
-  margin:0 0 14px;
+  margin:0 0 16px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink-3);
 }
@@ -945,7 +806,7 @@ ul{margin:0;padding:0;list-style:none}
 }
 .support__topics{list-style:none;margin:0;padding:0;max-width:46ch}
 .support__topics li{
-  padding:17px 0;border-top:1px solid var(--hairline);
+  padding:16px 0;border-top:1px solid var(--hairline);
   font-size:14px;line-height:1.55;color:var(--ink-3);
 }
 .support__topics span{display:block;margin-bottom:4px;font-size:16px;font-weight:500;color:var(--ink)}
@@ -958,7 +819,7 @@ ul{margin:0;padding:0;list-style:none}
 .sheet__cloth{
   position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;
   /* drop-shadow follows the canvas's alpha silhouette, so the shadow bends with
-     the cloth for free — a per-quad canvas shadow would cost a second pass */
+     the cloth for free â€” a per-quad canvas shadow would cost a second pass */
   filter:drop-shadow(-9px 20px 24px rgba(46,61,40,.22));
 }
 .sheet.is-held .sheet__cloth{cursor:grabbing}
@@ -978,44 +839,44 @@ main{position:relative;z-index:1;background:var(--paper)}
 .revealwrap{position:relative;clip-path:inset(0)}   /* containing block for the fixed footer */
 .footer{
   position:fixed;bottom:0;left:0;width:100%;z-index:0;
-  padding:clamp(22px,2.4vw,34px) var(--pad) 26px;
+  padding:clamp(24px,2.4vw,32px) var(--pad) 24px;
   background:var(--olive);color:var(--paper-hi);
 }
 .footer__top{
   display:grid;
   grid-template-columns:minmax(0,1.05fr) minmax(0,1.5fr) auto minmax(0,.95fr);
   gap:clamp(26px,3vw,60px);align-items:start;
-  padding-bottom:clamp(20px,2.2vw,34px);
+  padding-bottom:clamp(20px,2.2vw,32px);
 }
 .footer__mark{
-  margin:0 0 14px;font-family:var(--display);font-weight:600;
-  font-size:21px;letter-spacing:-.02em;
+  margin:0 0 16px;font-family:var(--display);font-weight:600;
+  font-size:20px;letter-spacing:-.02em;
 }
-.footer__tag{margin:0;max-width:30ch;font-size:13.5px;line-height:1.6;color:rgba(232,233,223,.6)}
+.footer__tag{margin:0;max-width:30ch;font-size:14px;line-height:1.6;color:var(--on-olive-2)}
 .footer__cols{display:grid;grid-template-columns:repeat(3,minmax(96px,1fr));gap:clamp(20px,2.4vw,46px)}
 .footer__h{
-  margin:0 0 14px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(232,233,223,.45);
+  margin:0 0 16px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--on-olive-3);
 }
 .footer__cols a{
-  display:block;padding:5px 0;font-size:14px;color:rgba(232,233,223,.76);
+  display:block;padding:4px 0;font-size:14px;color:var(--on-olive-2);
   transition:color .18s var(--ease);
 }
 .footer__cols a:hover{color:var(--paper-hi)}
-.footer__line{margin:0;padding:5px 0;font-size:14px;color:rgba(232,233,223,.6)}
-.footer__line.is-pending{color:rgba(232,233,223,.42);font-style:italic}
+.footer__line{margin:0;padding:4px 0;font-size:14px;color:var(--on-olive-2)}
+.footer__line.is-pending{color:var(--on-olive-3)}
 
 /* The device, tilted like a card on a desk, and big enough to lean over the
    contact column. Negative margins so it overlaps rather than widening the
-   grid, and vh in the clamp so a tall phone never outgrows a short footer —
+   grid, and vh in the clamp so a tall phone never outgrows a short footer â€”
    anything past the footer's own box is cut by .revealwrap's clip-path. */
 .footer__shot{
   position:relative;z-index:1;align-self:center;
   /* tall enough to own the whole row and reach the footer's top edge. It
      cannot overhang ABOVE that edge: .revealwrap's clip-path makes the wrapper
      the containing block for the fixed footer, so the wrapper box is also the
-     clip — anything past it is cut, not overhung. */
+     clip â€” anything past it is cut, not overhung. */
   height:clamp(300px,46vh,560px);
   /* the pair of margins is what positions it: less pull left, more pull right
      slides it toward the app column without resizing its grid track */
@@ -1031,31 +892,31 @@ main{position:relative;z-index:1;background:var(--paper)}
 .footer__shot img{display:block;height:100%;width:auto}
 
 .footer__h2{
-  margin:0 0 12px;font-family:var(--display);font-weight:500;
-  font-size:21px;letter-spacing:-.02em;
+  margin:0 0 16px;font-family:var(--display);font-weight:500;
+  font-size:20px;letter-spacing:-.02em;
 }
-.stores{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px}
+.stores{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:12px}
 /* not links: there is no app to download yet, and a dead store button is worse
    than an honest "coming soon" */
 .storebtn{
-  display:inline-flex;align-items:center;gap:11px;
-  padding:9px 16px 9px 13px;border-radius:14px;corner-shape:squircle;
-  border:1px solid rgba(232,233,223,.26);color:rgba(232,233,223,.82);
+  display:inline-flex;align-items:center;gap:12px;
+  padding:8px 16px;border-radius:12px;corner-shape:squircle;
+  border:1px solid var(--on-olive-line);color:var(--on-olive-2);
   width:max-content;
 }
-.storebtn svg{width:19px;height:19px;flex:none}
-.storebtn span{display:block;font-size:15px;font-weight:500;line-height:1.15}
+.storebtn svg{width:20px;height:20px;flex:none}
+.storebtn span{display:block;font-size:16px;font-weight:500;line-height:1.15}
 .storebtn small{
-  display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;
-  text-transform:uppercase;color:rgba(232,233,223,.5);margin-bottom:2px;
+  display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--on-olive-3);margin-bottom:2px;
 }
 .footer__base{
   display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;
-  padding-top:20px;border-top:1px solid rgba(232,233,223,.16);
-  font-size:13px;color:rgba(232,233,223,.5);
+  padding-top:20px;border-top:1px solid var(--on-olive-line);
+  font-size:12px;color:var(--on-olive-3);
 }
 .footer__base p{margin:0}
-.footer__legal.is-pending{color:rgba(232,233,223,.42)}
+.footer__legal.is-pending{color:var(--on-olive-3)}
 
 @media (max-width:1100px){
   .app{height:auto;grid-template-columns:1fr;padding:72px var(--pad);gap:48px}
@@ -1072,14 +933,14 @@ main{position:relative;z-index:1;background:var(--paper)}
 /* ---------- product tabs ----------
    Switching lands on the new product's first section, so nobody meets a
    product mid-teardown without having read its pitch. The scroll jump is
-   instant and hidden behind the outgoing panel while it is still opaque — an
+   instant and hidden behind the outgoing panel while it is still opaque â€” an
    animated scroll would drive the incoming stage's phases backwards and play
    the teardown in reverse.
    The outgoing panel is pinned as a one-viewport snapshot for the length of
    the cross-fade. That pin is load-bearing twice over: without it two 240vh
    panels sit in flow at once and the document doubles in height, AND the
    outgoing panel would be dragged along by the jump instead of covering it.
-   Motion lives on .stage__sticky, not .panel — it is the only part on screen,
+   Motion lives on .stage__sticky, not .panel â€” it is the only part on screen,
    and it is 100vh instead of 240vh, so the blur composites a third of the area.
    ponytail: [hidden] still does the hiding; the classes only drive the motion. */
 .panel[hidden]{display:none}
@@ -1105,13 +966,13 @@ main{position:relative;z-index:1;background:var(--paper)}
   .panel.is-leaving{display:none}
 }
 /* background:transparent is the point of this rule. <button> defaults to the
-   UA's `buttonface` grey, and only .is-active set a background — so the chip
+   UA's `buttonface` grey, and only .is-active set a background â€” so the chip
    you were NOT on rendered as a pale box that belongs to no palette here.
    The <a> siblings never showed it because anchors are transparent already. */
 .chip{border:0;background:transparent;font:inherit;cursor:pointer}
 
 /* The product toggle belongs to the two stage sections it actually controls.
-   Past them — on the canvas and the collection — it is gone, and it is gone
+   Past them â€” on the canvas and the collection â€” it is gone, and it is gone
    from tab order and the a11y tree too, not merely faded. Same while the cart
    is open: you are looking at what you picked, not choosing a stage.
    Both states live on <body> because the header is a PRECEDING sibling of
@@ -1142,31 +1003,31 @@ main{position:relative;z-index:1;background:var(--paper)}
 .cart.is-open .cart__panel{transform:none}
 .cart__top{
   display:flex;align-items:center;justify-content:space-between;
-  padding:26px 26px 20px;border-bottom:1px solid var(--hairline);
+  padding:24px 24px 20px;border-bottom:1px solid var(--hairline);
 }
-.cart__h{margin:0;font-family:var(--display);font-weight:500;font-size:22px;letter-spacing:-.02em}
+.cart__h{margin:0;font-family:var(--display);font-weight:500;font-size:24px;letter-spacing:-.02em}
 .cart__close{
   display:grid;place-items:center;width:36px;height:36px;padding:0;
   border:0;background:transparent;color:var(--ink-2);cursor:pointer;
   border-radius:12px;corner-shape:squircle;
 }
-.cart__close svg{width:19px;height:19px}
+.cart__close svg{width:20px;height:20px}
 .cart__close:hover{background:rgba(46,61,40,.06);color:var(--ink)}
 
-.cart__empty{margin:0;padding:34px 26px;font-size:14px;color:var(--ink-3)}
+.cart__empty{margin:0;padding:32px 24px;font-size:14px;color:var(--ink-3)}
 .cart__items{
-  list-style:none;margin:0;padding:6px 26px;
+  list-style:none;margin:0;padding:8px 24px;
   flex:1;min-height:0;overflow-y:auto;
 }
-.cart__row{display:grid;grid-template-columns:62px 1fr auto;gap:16px;
-  align-items:center;padding:18px 0;border-bottom:1px solid var(--hairline)}
+.cart__row{display:grid;grid-template-columns:64px 1fr auto;gap:16px;
+  align-items:center;padding:16px 0;border-bottom:1px solid var(--hairline)}
 .cart__thumb{
-  width:62px;height:48px;display:flex;align-items:center;justify-content:center;
+  width:64px;height:48px;display:flex;align-items:center;justify-content:center;
   background:var(--paper-hi);
 }
 .cart__thumb img{max-width:100%;max-height:100%;mix-blend-mode:multiply}
-.cart__name{display:block;font-size:14px;font-weight:500;margin-bottom:3px}
-.cart__line{display:block;font-size:13px;color:var(--ink-3)}
+.cart__name{display:block;font-size:14px;font-weight:500;margin-bottom:4px}
+.cart__line{display:block;font-size:12px;color:var(--ink-3)}
 .cart__qty{display:flex;align-items:center;gap:2px}
 .cart__step{
   width:26px;height:26px;display:grid;place-items:center;padding:0;
@@ -1174,14 +1035,14 @@ main{position:relative;z-index:1;background:var(--paper)}
   border-radius:8px;cursor:pointer;font:inherit;font-size:14px;line-height:1;
 }
 .cart__step:hover{background:rgba(46,61,40,.06);color:var(--ink)}
-.cart__n{min-width:26px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
+.cart__n{min-width:26px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums}
 
-.cart__foot{padding:20px 26px 26px;border-top:1px solid var(--hairline);display:grid;gap:14px}
+.cart__foot{padding:20px 24px 24px;border-top:1px solid var(--hairline);display:grid;gap:16px}
 .cart__total{
   margin:0;display:flex;align-items:baseline;justify-content:space-between;
   font-size:14px;color:var(--ink-2);
 }
-.cart__sum{font-family:var(--display);font-weight:500;font-size:24px;letter-spacing:-.02em;color:var(--ink)}
+.cart__sum{font-family:var(--display);font-weight:500;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:-.02em;color:var(--ink)}
 .cart__checkout{width:100%;justify-content:center}
 
 @media (prefers-reduced-motion:reduce){
