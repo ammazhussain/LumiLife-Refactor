@@ -6,9 +6,16 @@ reveal footer. Several blocks ship as deliberate placeholders — see below.
 ## Run it
 
 ```bash
-python -m http.server 8777
+python serve.py 8777
 # then open http://127.0.0.1:8777/
 ```
+
+**Use `serve.py`, not `python -m http.server`.** The stdlib server answers Range
+requests with a plain 200 and the whole file, so Chrome marks the section-2
+clip unseekable and the scroll scrub silently falls back to the PNG crossfade —
+no error, no 404, the render just never moves. `serve.py` is that server plus
+~20 lines of byte-range handling. **The production host must serve ranges too**
+(nginx, Netlify, Vercel, Cloudflare and GitHub Pages all do by default).
 
 Serve it over http. Opening `index.html` as a `file://` URL **silently kills the
 fonts** — Chrome blocks woff2 across the `null` origin and you get the fallback
@@ -25,7 +32,9 @@ index.html          the whole page — all copy lives here, plus the JSON-LD
 css/site.css        one stylesheet, sections in source order
 js/site.js          two small IIFEs: the scroll stage, and the nav auto-hide
 assets/img/         product renders, pre-processed (see below)
+assets/video/       the scrubbed disassembly clip (see below)
 assets/fonts/       Clash Display + Satoshi, variable woff2, self-hosted
+serve.py            dev server; stdlib http.server plus Range support
 ```
 
 ## Sections so far
@@ -34,10 +43,17 @@ assets/fonts/       Clash Display + Satoshi, variable woff2, self-hosted
 Display and split top-left / bottom-right. The glasses float in front of the
 type. Trust facts top-right, lead copy and the primary CTA bottom-left.
 
-**2 — Anatomy.** Same sticky stage. The assembled render crossfades into the
-exploded assembly while the exploded one scales `1.085 → 1`, so the olive frame
-front holds position and only the parts fly apart. Five callouts with hairline
-leaders arrive mid-separation.
+**2 — Anatomy.** Same sticky stage. On a capable desktop browser this is a
+**scroll-scrubbed 3D clip**, `assets/video/glasses-explode.mp4` — 232 frames,
+1280x720, 1.9MB. Scroll position drives `video.currentTime` directly; nothing
+plays, nothing autoplays. See "The scrubbed clip" below.
+
+Everywhere else it is the original **PNG crossfade**: the assembled render
+dissolves into the exploded assembly while the exploded one scales `1.085 → 1`,
+so the olive frame front holds position and only the parts fly apart. Both
+`.product__img` layers are still in the markup and still carry the alt text —
+the clip is `aria-hidden` and decorative. Four callouts with hairline leaders
+arrive over the held final frame.
 
 **4 — The collection.** Two product cards, Glasses and Ring, at `#buy`. Every
 claim is recycled from sections 1–3; nothing new is asserted. The eight spec
@@ -69,6 +85,86 @@ at `#shift`.
 wireframe asked: no nav, no cart, no product toggle. States the idea behind the
 motto, with six everyday asks beside it, and the three trust facts on a rule
 along the bottom.
+
+## The scrubbed clip
+
+The source was a 10s 1280x720 render. What ships is that clip trimmed,
+normalised and re-encoded:
+
+```bash
+ffmpeg -i source.mp4 \
+  -vf "select='gte(n\,8)',setpts=N/24/TB,colorlevels=rimax=0.868:gimax=0.868:bimax=0.868" \
+  -an -c:v libx264 -g 6 -crf 20 -preset slow -pix_fmt yuv420p -movflags +faststart \
+  assets/video/glasses-explode.mp4
+```
+
+Each flag is load-bearing:
+
+- **`select=gte(n,8)`** drops the first 8 frames. The render opens on a fast
+  dolly-out from a close-up that reads as a whip when you scrub it.
+- **`colorlevels` at 0.868** is the house normalisation, the same one the PNGs
+  got. The studio backdrop runs 0xDE at the top to 0xF6 at the bottom; that
+  white point lifts all of it to pure 0xFF so `mix-blend-mode:multiply` drops
+  it onto the paper and the contact shadows survive. **This is the one number
+  to re-measure if a new clip arrives on a different backdrop** — sample a
+  background corner, divide by 255, subtract a little headroom.
+- **`-g 6`** is why this is a video and not an image sequence. A seek decodes at
+  most six frames, which is free at 720p. All-intra (`-g 1`) is 3.8MB and a
+  232-frame WebP sequence is about the same; this is 1.9MB.
+- **`-an`** — the source had an audio track. Nothing ever plays it.
+- **`+faststart`** puts the moov atom first, so the clip is seekable before the
+  whole file has arrived.
+
+### How it is wired
+
+`js/site.js`, inside the scroll-stage IIFE. Three constants at the top are the
+only tuning knobs:
+
+```
+VID_OUT = 0.56   scroll fraction at which the clip reaches its last frame
+P3_IN   = 0.42   anatomy copy + callouts start arriving
+P3_OUT  = 0.62   ... and are fully opaque
+```
+
+The clip is driven **linearly** off raw `p`, not off the eased `--p1`. Its own
+choreography is the easing: ~3.5s of slow orbit, the parts fly apart over its
+frames 88–112, then the camera drifts on to the final angle. Easing that again
+squeezes the burst into no scroll at all. `VID_OUT < 1` on purpose — the clip
+finishes early and holds its last frame while the callouts land on parts that
+have stopped moving.
+
+The callout `--xf/--yf` for this path live in `css/site.css` under `.has-scrub`,
+read straight off the clip's last frame as `x/1280` and `y/720`. They are
+`!important` because the PNG path's own figures are inline on each `<li>`. The
+`--ty` label slots are shared: the gutter rhythm belongs to the layout, not to
+whichever render is on screen.
+
+### The feature switch
+
+`has-scrub` on `<html>` is what swaps the PNGs for the clip, and **`enable()` in
+`js/site.js` only sets it after a probe seek actually lands**. That probe is not
+belt and braces. `loadeddata` fires on a browser with no H.264 decoder too — it
+reports a duration and a `videoWidth` and then paints nothing — so trusting it
+swaps a working render for a white rectangle. The probe also catches the
+non-Range server described under "Run it", and logs a `console.warn` naming it,
+because nothing else on the page goes wrong to point at the cause.
+
+The `<video>` ships with **`data-src`, not `src`**. `preload="none"` is only a
+hint and Chrome fetches the clip regardless; that is 1.9MB charged to every
+phone, and phones are exactly the path that never shows it. `enable()` sets
+`.src` only once the guards (≥1100px, no `prefers-reduced-motion`) have passed.
+
+The swap is a crossfade rather than a cut — the clip takes over a network round
+trip after the PNG hero has painted, and two different renders snapping over
+each other on the hero is the kind of flicker people notice.
+
+### Known rough edge
+
+The PNG hero and the clip's first frame are different renders at different
+scales, so the crossfade reads as a soft morph on a cold load. Exporting frame 0
+as the hero PNG would remove it, but `glasses-assembled.png` is also used by
+section 4's product card and by the Product JSON-LD, so that swap is its own
+change.
 
 ## Two things to know before you touch it
 

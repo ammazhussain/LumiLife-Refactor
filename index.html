@@ -63,6 +63,14 @@
            alt="LumiLife Glasses in matte olive, three-quarter view, with the camera module in the left corner of the frame" width="1431" height="457" fetchpriority="high">
       <img class="product__img product__img--parts" src="assets/img/glasses-exploded.png"
            alt="LumiLife Glasses taken apart: lenses, frame front, camera module, Lumi processor board, speaker, hinges and both temples" width="1530" height="948" loading="eager">
+      <!-- Scroll-scrubbed disassembly. Decorative: the two imgs above carry the
+           alt text and stay the fallback whenever the scrub does not switch on. -->
+      <!-- data-src, not src: preload="none" is only a hint and Chrome fetches
+           the clip anyway, which is 1.9MB charged to every phone that will
+           never show it. js/site.js sets .src once the guards pass. -->
+      <video class="product__vid" data-src="assets/video/glasses-explode.mp4"
+             width="1280" height="720" muted playsinline
+             disablepictureinpicture aria-hidden="true"></video>
     </div>
 
     <!-- hero copy -->
@@ -96,10 +104,10 @@
       </div>
 
       <ul class="callouts">
-        <li class="callout" style="--xf:.249;--yf:.245;--ty:.09"><span class="callout__dot"></span><span class="callout__text"><b>Camera module</b>Looks where you look, lens stack and all</span></li>
-        <li class="callout callout--below" style="--xf:.076;--yf:.212;--ty:.30"><span class="callout__dot"></span><span class="callout__text"><b>Speaker</b>Aimed at your ear, not at the room</span></li>
-        <li class="callout callout--right callout--key" style="--xf:.442;--yf:.277;--ty:.09"><span class="callout__dot"></span><span class="callout__text"><b>Lumi processor</b>Runs on the glasses, not in a data centre</span></li>
-        <li class="callout callout--right" style="--xf:.455;--yf:.698;--ty:.30"><span class="callout__dot"></span><span class="callout__text"><b>Lenses</b>Clear, tinted or your own prescription</span></li>
+        <li class="callout callout--camera" style="--xf:.249;--yf:.245;--ty:.09"><span class="callout__dot"></span><span class="callout__text"><b>Camera module</b>Looks where you look, lens stack and all</span></li>
+        <li class="callout callout--below callout--speaker" style="--xf:.076;--yf:.212;--ty:.30"><span class="callout__dot"></span><span class="callout__text"><b>Speaker</b>Aimed at your ear, not at the room</span></li>
+        <li class="callout callout--right callout--key callout--cpu" style="--xf:.442;--yf:.277;--ty:.09"><span class="callout__dot"></span><span class="callout__text"><b>Lumi processor</b>Runs on the glasses, not in a data centre</span></li>
+        <li class="callout callout--right callout--lenses" style="--xf:.455;--yf:.698;--ty:.30"><span class="callout__dot"></span><span class="callout__text"><b>Lenses</b>Clear, tinted or your own prescription</span></li>
       </ul>
     </div>
 

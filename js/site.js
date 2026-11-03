@@ -17,6 +17,38 @@
     return t * t * (3 - 2 * t); // smoothstep
   }
 
+  // --- scrubbed disassembly ------------------------------------------------
+  // The clip carries its own choreography -- slow orbit, then the parts fly
+  // apart over its frames 88-112 of 232, then the camera drifts on to the
+  // final angle. So it is driven LINEARLY off raw p: easing it again would
+  // squeeze that burst into no scroll at all.
+  //
+  // VID_OUT 0.56 puts the burst at p 0.21-0.27, just as the hero copy finishes
+  // leaving (p2 ends 0.34), and leaves the clip holding its last frame from
+  // 0.56 on. The callouts only reach full opacity at 0.62, by which point the
+  // render has stopped and the dots are exactly on their parts.
+  // ponytail: these three are the tuning knobs. Everything else is geometry.
+  var VID_OUT = 0.56, P3_IN = 0.42, P3_OUT = 0.62;
+
+  var vid = null, pending = -1;
+
+  function flush() {
+    if (pending < 0 || !vid) return;
+    var t = pending; pending = -1;
+    vid.currentTime = t;
+  }
+
+  function scrub(st, p) {
+    var v = st.querySelector('.product__vid');
+    if (!v || !v.duration) return false;
+    if (v !== vid) { vid = v; v.addEventListener('seeked', flush); }
+    // last frame, not duration: seeking to duration itself lands past the end
+    // and Chrome serves the frame before it, which reads as a one-frame jitter.
+    var t = Math.min(p / VID_OUT, 1) * (v.duration - 1 / 24);
+    if (v.seeking) { pending = t; } else { pending = -1; v.currentTime = t; }
+    return true;
+  }
+
   function update() {
     queued = false;
     var st = stage();
@@ -26,10 +58,55 @@
     var p = -st.getBoundingClientRect().top / travel;
     p = p < 0 ? 0 : p > 1 ? 1 : p;
 
+    var scrubbed = root.classList.contains('has-scrub') && scrub(st, p);
+
     root.style.setProperty('--p1', phase(p, 0.12, 0.58)); // glasses come apart
     root.style.setProperty('--p2', phase(p, 0.08, 0.34)); // hero copy leaves
-    root.style.setProperty('--p3', phase(p, 0.26, 0.50)); // anatomy copy arrives
+    root.style.setProperty('--p3', scrubbed                // anatomy copy arrives
+      ? phase(p, P3_IN, P3_OUT)
+      : phase(p, 0.26, 0.50));
   }
+
+  // Switch the scrub on only once the clip really scrubs, and only on the
+  // layout it was composed for. Every other path keeps the PNG crossfade,
+  // which needs nothing from this block to work.
+  //
+  // The probe seek is the whole point of this function. 'loadeddata' only says
+  // the container parsed -- a browser with no H.264 decoder still fires it,
+  // reports duration and videoWidth, and then paints nothing. Trusting it
+  // swaps a working render for a white rectangle. So: ask for a frame, and
+  // only take over if currentTime actually went there.
+  (function enable() {
+    var v = document.querySelector('.product__vid');
+    if (!v) return;
+    if (!matchMedia('(min-width:1100px)').matches) return;
+    if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+
+    // The element ships with no src at all: every path that keeps the PNGs --
+    // narrow, reduced motion, no decoder -- must not pay 1.9MB for a clip it
+    // will never show, and phones are exactly the narrow path.
+    v.preload = 'auto';
+    v.src = v.dataset.src;
+
+    v.addEventListener('loadeddata', function () {
+      var probe = 1 / 24;
+      v.currentTime = probe;
+      setTimeout(function () {
+        if (v.currentTime < probe / 2) {        // never got there -- keep the PNGs
+          // Loudly, because the usual cause in dev is a static server that
+          // answers Range with a plain 200 (python -m http.server does), and
+          // nothing else on the page goes wrong to point at it.
+          if (v.seekable.length && v.seekable.end(0) === 0) {
+            console.warn('scrub off: the server is not serving byte ranges, ' +
+                         'so the clip is not seekable. Use ./serve.py.');
+          }
+          return;
+        }
+        root.classList.add('has-scrub');
+        update();
+      }, 400);
+    }, { once: true });
+  })();
 
   function onScroll() {
     if (!queued) { queued = true; requestAnimationFrame(update); }

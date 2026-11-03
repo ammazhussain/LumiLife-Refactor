@@ -204,6 +204,45 @@ ul{margin:0;padding:0;list-style:none}
   opacity:calc(var(--p1) * 1.35 - .18);
 }
 
+/* ---------- scrubbed disassembly ---------- */
+/* The render was normalised at encode time (ffmpeg colorlevels, white point
+   0.868 of the studio grey) so the backdrop is already pure white and multiply
+   drops it the same way the PNGs do. Re-encode with that number if a new clip
+   comes in on a different backdrop -- it is the one knob this depends on.
+   ponytail: one <video>, GOP of 6, scrubbed by currentTime. A 232-frame image
+   sequence was the other option and costs 3x the bytes for the same picture. */
+.product__vid{
+  position:absolute;left:0;top:50%;width:100%;height:auto;
+  transform:translateY(-50%);
+}
+/* The swap is a crossfade, not a cut: the clip only takes over once it has
+   proved it can seek, which is a network round trip after the PNG hero has
+   already painted. Two different renders snapping over each other on the hero
+   is the kind of flicker people notice; a dissolve reads as the page settling.
+   Both stay in flow -- opacity only, so neither reflows the other. */
+/* Scoped off .stage--ring throughout: has-scrub is set on <html>, but only the
+   glasses stage has a clip. Unscoped, the fade-out blanks the Ring's renders
+   the moment the glasses stage takes over, and the Ring panel comes up empty. */
+.product__vid{opacity:0;transition:opacity .45s var(--ease)}
+.has-scrub .stage:not(.stage--ring) .product__vid{opacity:1}
+.has-scrub .stage:not(.stage--ring) .product__img{
+  opacity:0!important;transition:opacity .45s var(--ease);
+}
+/* the clip is 16:9 and its content fills the frame, so the stage box, the
+   callout box and the video frame are the same rectangle -- which is what lets
+   --xf/--yf below be read straight off the 1280x720 render. */
+.has-scrub .stage:not(.stage--ring){--box-ar:1.7778}
+/* The clip's exploded layout is the PNG's, re-rendered -- same parts, camera a
+   few degrees over. So the dots only need re-reading off the clip's last frame,
+   as x/1280 and y/720. The --ty label slots are untouched: the gutter rhythm is
+   the layout's, not the render's.
+   !important because the PNG's own figures are inline on each <li>, beside the
+   copy, which is where the rest of this page keeps per-callout tuning. */
+.has-scrub .callout--camera{--xf:.244!important;--yf:.218!important}
+.has-scrub .callout--speaker{--xf:.074!important;--yf:.184!important}
+.has-scrub .callout--cpu{--xf:.435!important;--yf:.246!important}
+.has-scrub .callout--lenses{--xf:.460!important;--yf:.700!important}
+
 /* ---------- copy layers ---------- */
 .layer{position:absolute;inset:0;z-index:3;pointer-events:none}
 .layer a,.layer button{pointer-events:auto}
