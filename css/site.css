@@ -878,23 +878,24 @@ main{position:relative;z-index:1;background:var(--paper)}
 .revealwrap{position:relative;clip-path:inset(0)}   /* containing block for the fixed footer */
 .footer{
   position:fixed;bottom:0;left:0;width:100%;z-index:0;
-  padding:clamp(24px,2.4vw,32px) var(--pad) 24px;
+  padding:clamp(56px,5vw,88px) var(--pad) 32px;
   background:var(--olive);color:var(--paper-hi);
 }
 .footer__top{
   display:grid;
   grid-template-columns:minmax(0,1.05fr) minmax(0,1.5fr) auto minmax(0,.95fr);
   gap:clamp(26px,3vw,60px);align-items:start;
-  padding-bottom:clamp(20px,2.2vw,32px);
+  padding-bottom:clamp(40px,3.6vw,64px);
 }
 .footer__mark{
-  margin:0 0 16px;font-family:var(--display);font-weight:600;
+  margin:0 0 18px;font-family:var(--display);font-weight:600;
   font-size:20px;letter-spacing:-.02em;
 }
+.footer__mark,.footer__h,.footer__h2{line-height:24px}
 .footer__tag{margin:0;max-width:30ch;font-size:14px;line-height:1.6;color:var(--on-olive-2)}
 .footer__cols{display:grid;grid-template-columns:repeat(3,minmax(96px,1fr));gap:clamp(20px,2.4vw,46px)}
 .footer__h{
-  margin:0 0 16px;
+  margin:0 0 18px;
   font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--on-olive-3);
 }
@@ -931,10 +932,10 @@ main{position:relative;z-index:1;background:var(--paper)}
 .footer__shot img{display:block;height:100%;width:auto}
 
 .footer__h2{
-  margin:0 0 16px;font-family:var(--display);font-weight:500;
+  margin:0 0 18px;font-family:var(--display);font-weight:500;
   font-size:20px;letter-spacing:-.02em;
 }
-.stores{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:12px}
+.stores{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:12px}
 /* not links: there is no app to download yet, and a dead store button is worse
    than an honest "coming soon" */
 .storebtn{
@@ -951,7 +952,7 @@ main{position:relative;z-index:1;background:var(--paper)}
 }
 .footer__base{
   display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;
-  padding-top:20px;border-top:1px solid var(--on-olive-line);
+  padding-top:24px;border-top:1px solid var(--on-olive-line);
   font-size:12px;color:var(--on-olive-3);
 }
 .footer__base p{margin:0}
